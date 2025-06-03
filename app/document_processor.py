@@ -3,7 +3,7 @@ from pydoc import doc
 from typing import Any, List, Optional, Dict
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.schema.document import Document
+from langchain_core.documents import Document
 import pypdf
 
 DEFAULT_CHUNK_SIZE = 1000
