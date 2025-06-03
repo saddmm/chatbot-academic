@@ -1,7 +1,10 @@
+import os
+from pydoc import doc
 from typing import Any, List, Optional, Dict
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.schema.document import Document
+import pypdf
 
 DEFAULT_CHUNK_SIZE = 1000
 DEFAULT_CHUNK_OVERLAP = 150
@@ -9,9 +12,22 @@ DEFAULT_DATA_DIR = "data/documents"
 DEFAULT_URL_LIST_FILE = "app/data/urls.txt"
 
 
+def load_document_pdf(
+    file_path: str
+) -> List[Document]:
+    try:
+        file_extension = os.path.splitext(file_path)[1].lower()
+        if file_extension == ".pdf":
+            loader = pypdf.PyPDFLoader(file_path)
+            documents = loader.load()
+            return documents
+    except Exception as e:
+        raise ValueError(f"Failed to load PDF document from {file_path}: {str(e)}")
+    
+
 # Memproses dokumen dari URL untuk retrieval-augmented generation (RAG)
 def process_document_for_rag(
-    # location_data: Optional[str] = DEFAULT_DATA_DIR,
+    local_dir: Optional[str] = DEFAULT_DATA_DIR,
     url_list_file_path: Optional[str] = DEFAULT_URL_LIST_FILE,
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
@@ -28,12 +44,25 @@ def process_document_for_rag(
     """
     loaded_documents = []
     try:
-        urls = read_urls_from_file(url_list_file_path)
-        if urls:
-            for i, url in enumerate(urls):
-                print(f"Processing URL {i + 1}/{len(urls)}: {url}")
-                documents = load_web_url_content(url)
-                loaded_documents.extend(documents)
+        if local_dir:
+            if not os.path.exists(local_dir):
+                print(f"Tidak ada file di direktori: {local_dir}")
+            else:
+                for file_name in os.listdir(local_dir):
+                    file_path = os.path.join(local_dir, file_name)
+                    if os.path.isfile(file_path):
+                        print(f"Memproses file: {file_path}")
+                        documents = load_document_pdf(file_path)
+                        if documents:
+                            loaded_documents.extend(documents)
+
+        if url_list_file_path:
+            urls = read_urls_from_file(url_list_file_path)
+            if urls:
+                for i, url in enumerate(urls):
+                    print(f"Processing URL {i + 1}/{len(urls)}: {url}")
+                    documents = load_web_url_content(url)
+                    loaded_documents.extend(documents)
 
         if not loaded_documents:
             return []
