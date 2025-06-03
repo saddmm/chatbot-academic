@@ -21,7 +21,7 @@ env/
 
 # Vector Store (jika besar dan tidak ingin di-commit, sesuaikan jika perlu)
 vector_store/*
-!vector_store/.gitkeep # Jika ingin folder tetap ada walau isinya diabaikan
+# !vector_store/.gitkeep # Jika ingin folder tetap ada walau isinya diabaikan
 
 # Data (jika datanya sensitif atau sangat besar)
 # data/raw/*

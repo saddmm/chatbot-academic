@@ -5,9 +5,17 @@ from langchain.schema.document import Document
 
 DEFAULT_CHUNK_SIZE = 1000
 DEFAULT_CHUNK_OVERLAP = 150
+DEFAULT_DATA_DIR = "data/documents"
+DEFAULT_URL_LIST_FILE = "app/data/urls.txt"
 
 
-def process_document_for_rag(url: str, chunk_size: int = DEFAULT_CHUNK_SIZE, chunk_overlap: int = DEFAULT_CHUNK_OVERLAP) -> List[Document]:
+# Memproses dokumen dari URL untuk retrieval-augmented generation (RAG)
+def process_document_for_rag(
+    # location_data: Optional[str] = DEFAULT_DATA_DIR,
+    url_list_file_path: Optional[str] = DEFAULT_URL_LIST_FILE,
+    chunk_size: int = DEFAULT_CHUNK_SIZE,
+    chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
+) -> List[Document]:
     """
     Process a document from a web URL for retrieval-augmented generation (RAG).
 
@@ -18,19 +26,42 @@ def process_document_for_rag(url: str, chunk_size: int = DEFAULT_CHUNK_SIZE, chu
     Returns:
         Dict[str, Any]: A dictionary containing the processed document and metadata.
     """
+    loaded_documents = []
     try:
-        documents = load_web_url_content(url)
-        if not documents:
-            raise ValueError(f"No content found at {url}")
+        urls = read_urls_from_file(url_list_file_path)
+        if urls:
+            for i, url in enumerate(urls):
+                print(f"Processing URL {i + 1}/{len(urls)}: {url}")
+                documents = load_web_url_content(url)
+                loaded_documents.extend(documents)
 
-        split_docs = split_documents(documents, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+        if not loaded_documents:
+            return []
 
-        return split_docs
+        chunked_documents = split_documents(loaded_documents, chunk_size, chunk_overlap)
+        return chunked_documents
+    except ValueError as e:
+        raise ValueError(f"Error processing URLs: {str(e)}")
 
-    except Exception as e:
-        raise ValueError(f"Failed to process document from {url}: {str(e)}") from e
+def read_urls_from_file(file_path: str) -> List[str]:
+    urls = []
 
-def load_web_url_content(url: str, custom_metadata: Optional[Dict[str, Any]] = None) -> List[Document]:
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            for line in file:
+                url = line.strip()
+                if url:
+                    urls.append(url)
+    except FileNotFoundError:
+        raise ValueError(f"File not found: {file_path}")
+
+    return urls
+
+
+# Memuat konten dari URL web
+def load_web_url_content(
+    url: str, custom_metadata: Optional[Dict[str, Any]] = None
+) -> List[Document]:
     """
     Load content from a web URL.
 
@@ -43,7 +74,7 @@ def load_web_url_content(url: str, custom_metadata: Optional[Dict[str, Any]] = N
     """
     # Placeholder for actual implementation
     try:
-        headers = { # Beberapa website butuh User-Agent
+        headers = {  # Beberapa website butuh User-Agent
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
         loader = WebBaseLoader(url, header_template=headers)
@@ -54,21 +85,29 @@ def load_web_url_content(url: str, custom_metadata: Optional[Dict[str, Any]] = N
         for doc in documents:
             doc_metadata = doc.metadata.copy()
 
-            if 'source' not in doc_metadata or not doc_metadata['source']:
-                doc_metadata['source'] = url
+            if "source" not in doc_metadata or not doc_metadata["source"]:
+                doc_metadata["source"] = url
             if custom_metadata:
                 doc_metadata.update(custom_metadata)
-            final_docs.append(Document(page_content=doc.page_content, metadata=doc_metadata))
-        
+            final_docs.append(
+                Document(page_content=doc.page_content, metadata=doc_metadata)
+            )
+
         if not final_docs:
             raise ValueError(f"No content found at {url}")
         else:
             return final_docs
-        
+
     except Exception as e:
         raise ValueError(f"Failed to load content from {url}: {str(e)}") from e
 
-def split_documents(documents: List[Document], chunk_size: int = DEFAULT_CHUNK_SIZE, chunk_overlap: int = DEFAULT_CHUNK_OVERLAP) -> List[Document]:
+
+# Memecah dokumen menjadi potongan-potongan teks
+def split_documents(
+    documents: List[Document],
+    chunk_size: int = DEFAULT_CHUNK_SIZE,
+    chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
+) -> List[Document]:
     """
     Split text into chunks of a specified size.
 
@@ -79,15 +118,24 @@ def split_documents(documents: List[Document], chunk_size: int = DEFAULT_CHUNK_S
     Returns:
         list: A list of text chunks.
     """
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, length_function=len, add_start_index=True)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        length_function=len,
+        add_start_index=True,
+    )
     split_docs = text_splitter.split_documents(documents)
     return split_docs
 
+
 if __name__ == "__main__":
     # Example usage
-    url = "https://informatika.umsida.ac.id/tentang-umsida/visi-dan-misi/"
     try:
-        content = process_document_for_rag(url)
+        content = process_document_for_rag(
+            url_list_file_path=DEFAULT_URL_LIST_FILE,
+            chunk_size=DEFAULT_CHUNK_SIZE,
+            chunk_overlap=DEFAULT_CHUNK_OVERLAP
+        )
         print("Content loaded successfully:", content)
     except ValueError as e:
         print(e)
