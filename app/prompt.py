@@ -22,13 +22,13 @@ RAG_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages([
         """Berikut adalah informasi yang mungkin relevan dari dokumen prodi:
 
 Konteks Informasi Prodi:
-{konteks_dokumen}
+{context}
 
 Dokumen Sumber yang Relevan (berdasarkan pencarian):
-{sumber_dokumen_str}
+{sources}
 
 Pertanyaan Mahasiswa:
-{pertanyaan_mahasiswa}
+{question}
 
 Jawaban Asisten Prodi (selalu ucapkan berdasarkan konteks dan sumber di atas, dan jika tidak ada, katakan tidak tahu):
 """
