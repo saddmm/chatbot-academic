@@ -9,7 +9,7 @@ import pypdf
 DEFAULT_CHUNK_SIZE = 1000
 DEFAULT_CHUNK_OVERLAP = 150
 DEFAULT_DATA_DIR = "data/documents"
-DEFAULT_URL_LIST_FILE = "app/data/urls.txt"
+# DEFAULT_URL_LIST_FILE = "app/data/urls.txt"
 
 
 def load_document_pdf(
@@ -28,7 +28,7 @@ def load_document_pdf(
 # Memproses dokumen dari URL untuk retrieval-augmented generation (RAG)
 def process_document_for_rag(
     local_dir: Optional[str] = DEFAULT_DATA_DIR,
-    url_list_file_path: Optional[str] = DEFAULT_URL_LIST_FILE,
+    url_list_file_path: Optional[str] = None,
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
 ) -> List[Document]:
@@ -161,7 +161,7 @@ if __name__ == "__main__":
     # Example usage
     try:
         content = process_document_for_rag(
-            url_list_file_path=DEFAULT_URL_LIST_FILE,
+            
             chunk_size=DEFAULT_CHUNK_SIZE,
             chunk_overlap=DEFAULT_CHUNK_OVERLAP
         )

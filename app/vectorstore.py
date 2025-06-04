@@ -1,7 +1,4 @@
-from json import load
-from operator import index
 import os
-import re
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from typing import List

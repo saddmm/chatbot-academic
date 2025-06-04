@@ -3,3 +3,4 @@ langchain-ollama
 pypdf
 beautifulsoup4
 langchain-community
+faiss-cpu
