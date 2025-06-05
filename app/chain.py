@@ -13,6 +13,54 @@ from .prompt import RAG_PROMPT_TEMPLATE
 from .vectorstore import get_or_create_vector_store
 
 
+def run_chatbot(message: str):
+    try:
+        llm = get_llm()  # Inisialisasi LLM
+        embedding_model = get_embedding()  # Inisialisasi model embedding
+        if not llm or not embedding_model:
+            raise ValueError("Gagal menginisialisasi LLM atau model embedding.")
+    except Exception as e:
+        print(f"Error saat menginisialisasi model: {e}")
+        return
+    
+    try:
+        vector_store = get_or_create_vector_store(
+            embedding_model=embedding_model,
+            vector_store_dir=os.path.join("vector_store", "test_index"),
+            index_name="index_prodi",
+        )
+        if not vector_store:
+            raise ValueError("Gagal membuat atau memuat vector store.")
+       
+        retriever_instance = vector_store.as_retriever(search_kwargs={"k": 3})
+        print("Vector store dan retriever berhasil disiapkan.")
+    except Exception as e:
+        print(f"Error saat menyiapkan vector store atau retriever: {e}")
+        return
+    
+    try:
+        rag_chain_instance = create_rag_chain(
+            llm=llm,
+            retriever=retriever_instance,
+            prompt=RAG_PROMPT_TEMPLATE
+        )
+        print("RAG Chain berhasil dibuat.")
+    except Exception as e:
+        print(f"Error saat membuat RAG chain: {e}")
+        return
+    
+    try:
+        response = rag_chain_instance.invoke({"question": message})
+        if not response:
+            print("Tidak ada jawaban yang diterima dari RAG chain.")
+            return
+        
+        return response
+    except Exception as e:
+        print(f"Error saat menjalankan RAG chain: {e}")
+        return
+
+
 def format_retrieved_docs(docs: list[Document]) -> tuple[str, str]:
     if not docs:
         return "no context", "no sources"

@@ -4,3 +4,4 @@ pypdf
 beautifulsoup4
 langchain-community
 faiss-cpu
+Flask
