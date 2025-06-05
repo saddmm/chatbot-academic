@@ -16,7 +16,7 @@ from .vectorstore import get_or_create_vector_store
 def format_retrieved_docs(docs: list[Document]) -> tuple[str, str]:
     if not docs:
         return "no context", "no sources"
-    
+
     formatted_context = []
     unique_sources = set()
 
@@ -25,15 +25,22 @@ def format_retrieved_docs(docs: list[Document]) -> tuple[str, str]:
         page = doc.metadata.get("page", None)
         page_info = f" (page {page+1})" if page is not None else ""
 
-        formatted_context.append(f"Kutipan dari {os.path.basename(source)}{page_info}: {doc.page_content}")
+        formatted_context.append(
+            f"Kutipan dari {os.path.basename(source)}{page_info}: {doc.page_content}"
+        )
         unique_sources.add(os.path.basename(source))
-    
+
     context_str = "\n\n---\n\n".join(formatted_context)
     sources_str = "\n".join(f"- {source}" for source in sorted(list(unique_sources)))
 
     return context_str, sources_str
 
-def create_rag_chain(llm: BaseLanguageModel, retriever: VectorStore.as_retriever, prompt: ChatPromptTemplate):
+
+def create_rag_chain(
+    llm: BaseLanguageModel,
+    retriever: VectorStore.as_retriever,
+    prompt: ChatPromptTemplate,
+):
     """
     Create a Retrieval Augmented Generation (RAG) chain using the provided LLM and vector store.
 
@@ -44,39 +51,32 @@ def create_rag_chain(llm: BaseLanguageModel, retriever: VectorStore.as_retriever
     Returns:
         RetrievalQA: The RAG chain ready for use.
     """
+
     def retrieve_format_context(inputs: dict[str, Any]) -> dict[str, Any]:
         question = inputs["question"]
         retrieved_docs = retriever.invoke(question)
         context, sources = format_retrieved_docs(retrieved_docs)
         print(f"\nRetrieved {len(retrieved_docs)} documents for question: {question}")
         print(f"Context:{len(context)} : {context[:500]}...")
-        return {
-            "context": context,
-            "sources": sources,
-            "question": question
-        }
+        return {"context": context, "sources": sources, "question": question}
 
     rag_chain_from_docs = (
-        RunnableLambda(retrieve_format_context)
-        | prompt
-        | llm
-        | StrOutputParser()
+        RunnableLambda(retrieve_format_context) | prompt | llm | StrOutputParser()
     )
-        
-    
+
     return rag_chain_from_docs
 
 
-if __name__ == '__main__':
-    print("="*50)
+if __name__ == "__main__":
+    print("=" * 50)
     print(" MENJALANKAN TES MODUL RAG CHAIN ".center(50, "="))
-    print("="*50)
+    print("=" * 50)
 
     # 1. Inisialisasi LLM dan Embedding Model
     print("\n--- Menginisialisasi Model ---")
     try:
-        llm_instance = get_llm() # Gunakan model LLM default dari llm_config
-        embedding_model_instance = get_embedding() # Gunakan model embedding default
+        llm_instance = get_llm()  # Gunakan model LLM default dari llm_config
+        embedding_model_instance = get_embedding()  # Gunakan model embedding default
         if not llm_instance or not embedding_model_instance:
             raise ValueError("Gagal menginisialisasi LLM atau Embedding model.")
         print("LLM dan Embedding model berhasil diinisialisasi.")
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     print("\n--- Menyiapkan Vector Store & Retriever ---")
     # Path ke file yang berisi daftar URL (PDF atau Halaman Web)
     # Pastikan file ini ada dan berisi URL yang valid
-    # test_url_list_file = "app/data/urls.txt" 
+    # test_url_list_file = "app/data/urls.txt"
 
     # Proses dokumen (memuat dari URL dan memecahnya)
     # Untuk tes, kita hanya proses dari file URL, tidak dari direktori lokal
@@ -99,38 +99,44 @@ if __name__ == '__main__':
     try:
         document_chunks = process_document_for_rag(
             # local_directory_path=None, # Tidak pakai data lokal untuk tes cepat ini
-            
         )
         if not document_chunks:
-            print("Tidak ada dokumen yang diproses. Tidak bisa membuat vector store. Tes dibatalkan.")
-            
+            print(
+                "Tidak ada dokumen yang diproses. Tidak bisa membuat vector store. Tes dibatalkan."
+            )
+
         # Dapatkan atau buat vector store
         # Menggunakan nama direktori dan index default dari vectorstore_utils
         vector_store = get_or_create_vector_store(
             documents=document_chunks,
             embedding_model=embedding_model_instance,
-            vector_store_dir=os.path.join("vector_store", "rag_test_index"), # Subdirektori tes
-            index_name="rag_test_faiss"
+            vector_store_dir=os.path.join(
+                "vector_store", "test_index"
+            ),  # Subdirektori tes
+            index_name="index_prodi",
         )
         if not vector_store:
             print("Gagal membuat atau memuat vector store. Tes dibatalkan.")
             exit()
-        
+
         # Buat retriever dari vector store
         # 'k' adalah jumlah dokumen yang ingin diambil
-        retriever_instance = vector_store.as_retriever(search_kwargs={"k": 3}) 
+        retriever_instance = vector_store.as_retriever(search_kwargs={"k": 3})
         print("Vector store dan retriever berhasil disiapkan.")
 
     except Exception as e:
         print(f"Error saat menyiapkan vector store atau retriever: {e}")
         import traceback
+
         traceback.print_exc()
         exit()
 
     # 3. Buat RAG Chain
     print("\n--- Membuat RAG Chain ---")
     try:
-        rag_chain_instance = create_rag_chain(llm_instance, retriever_instance, RAG_PROMPT_TEMPLATE)
+        rag_chain_instance = create_rag_chain(
+            llm_instance, retriever_instance, RAG_PROMPT_TEMPLATE
+        )
         print("RAG Chain berhasil dibuat.")
     except Exception as e:
         print(f"Error saat membuat RAG chain: {e}")
@@ -140,12 +146,12 @@ if __name__ == '__main__':
     print("\n--- Menguji RAG Chain ---")
     # Pertanyaan ini harus relevan dengan isi dokumen di URL yang kamu berikan
     # Misalnya, jika salah satu URL adalah paper tentang LLM:
-    test_question = "Apa saja misi dari informatika?" 
+    test_question = "Apa saja misi dari informatika?"
     # Atau jika URLnya tentang kurikulum ITS:
     # test_question = "Mata kuliah apa saja yang ada di semester 1 sarjana Informatika ITS?"
 
     print(f"\nPertanyaan: {test_question}")
-    
+
     try:
         # Untuk melihat input yang masuk ke LLM, kita bisa lakukan ini (agak manual):
         # inputs_for_llm = retrieve_and_format_context_for_chain(
@@ -172,19 +178,20 @@ if __name__ == '__main__':
         # Mari kita pastikan pemanggilannya benar.
         # Chain kita dimulai dengan RunnableLambda(retrieve_and_format_context)
         # retrieve_and_format_context mengharapkan input: {"pertanyaan_mahasiswa": question}
-        
+
         response = rag_chain_instance.invoke({"question": test_question})
         if not response:
             print("Tidak ada jawaban yang diterima dari RAG chain.")
             exit()
-        
+
         print("\nJawaban Bot:")
         print(response)
     except Exception as e:
         print(f"Error saat menjalankan RAG chain: {e}")
         import traceback
+
         traceback.print_exc()
 
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print(" TES MODUL RAG CHAIN SELESAI ".center(50, "="))
-    print("="*50)
+    print("=" * 50)
