@@ -1,11 +1,7 @@
-
-
-from pyexpat import model
-from unittest.mock import DEFAULT
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
 
 
-DEFAULT_MODEL_NAME = "mistral:instruct"
+DEFAULT_MODEL_NAME = "phi3:instruct"
 DEFAULT_EMBEDDING_MODEL_NAME = "nomic-embed-text"
 DEFAULT_TEMPERATURE = 0.1
 

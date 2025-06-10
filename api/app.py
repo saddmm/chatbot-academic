@@ -1,28 +1,83 @@
-from flask import Flask, jsonify, request
-
-from app.chain import run_chatbot
+import uuid
+from flask import Flask, abort, make_response, request, jsonify
+from app.chain import create_graph
+from app.document_processor import process_document_for_rag
+from app.llm_config import get_embedding, get_llm
+from app.prompt import CONDENS_QUESTION_PROMPT_TEMPLATE, RAG_PROMPT_TEMPLATE
+from app.vectorstore import get_or_create_vector_store
+from langgraph.checkpoint.sqlite import SqliteSaver
+from langchain_core.messages import HumanMessage
 
 
 app = Flask(__name__)
 
+try:
+    llm = get_llm()
+    embedding_model = get_embedding()
 
-@app.route("/")
-def home():
-    return "Hello, World! This is the API for Prodi Assistant."
+    document_chunks = process_document_for_rag()
+    vector_store = get_or_create_vector_store(
+        documents=document_chunks,
+        embedding_model=embedding_model,
+        vector_store_dir="vector_store/rag_test_index",
+        index_name="rag_test_faiss",
+    )
+    retriever = vector_store.as_retriever(search_kwargs={"k": 3})
+    memory = SqliteSaver.from_conn_string("memory.sqlite")
+    
+    graph = create_graph(
+        llm=llm,
+        retriever=retriever,
+        rag_prompt=RAG_PROMPT_TEMPLATE,
+        condense_prompt=CONDENS_QUESTION_PROMPT_TEMPLATE
+    ).with_config(checkpointer=memory)
+    print("Komponen LLM dan Vector Store berhasil diinisialisasi.")
+except Exception as e:
+    print(f"Error saat menginisialisasi LLM atau Vector Store: {e}")
+    graph = None
+
+@app.route("/chat", methods=["POST"])
+def chat():
+
+    data = request.get_json()
+    
+    question = data.get("question")
+    session_id = request.cookies.get("session_id")
 
 
-@app.route("chat", methods=["POST"])
-async def chat():
-    # Placeholder for chat functionality
+    if not session_id:
+        session_id = str(uuid.uuid4()) # 1 day expiration
+    
+    if not graph:
+        abort(500, "Graph is not initialized. Please check the server logs for details.")
+    
+
     try:
-        message = request.json.get("message")
-        if not message:
-            return {"error": "Message is required"}, 400
+        config = {"configurable": {"thread_id": session_id}}
 
-        response = await run_chatbot(message)
-        return jsonify({response: response}), 200
+        input_data = {
+            "message": [HumanMessage(content=question)],
+            "question": question,
+        }
+
+        final_state = graph.invoke(
+            input_data,
+            config,
+        )
+
+        answer = final_state["message"][-1].content
+        response_data = {
+            "answer": answer,
+            "session_id": session_id
+        }
+        response = make_response(jsonify(response_data))
+        if not request.cookies.get("session_id"):
+            response.set_cookie("session_id", session_id, max_age=60*60*24)
+        
+        return response
     except Exception as e:
-        return {"error": str(e)}, 500
+        print(f"Error during graph invocation: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":

@@ -1,5 +1,4 @@
 import os
-from pydoc import doc
 from typing import Any, List, Optional, Dict
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -8,7 +7,7 @@ import pypdf
 
 DEFAULT_CHUNK_SIZE = 1000
 DEFAULT_CHUNK_OVERLAP = 150
-DEFAULT_DATA_DIR = "data/documents"
+# DEFAULT_DATA_DIR = "data/documents"
 # DEFAULT_URL_LIST_FILE = "app/data/urls.txt"
 
 
@@ -27,7 +26,7 @@ def load_document_pdf(
 
 # Memproses dokumen dari URL untuk retrieval-augmented generation (RAG)
 def process_document_for_rag(
-    local_dir: Optional[str] = DEFAULT_DATA_DIR,
+    local_dir: Optional[str] = None,
     url_list_file_path: Optional[str] = None,
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
