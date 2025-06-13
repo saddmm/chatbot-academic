@@ -3,11 +3,11 @@ from typing import Any, List, Optional, Dict
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
-import pypdf
+from langchain_community.document_loaders import PyPDFLoader
 
 DEFAULT_CHUNK_SIZE = 1000
 DEFAULT_CHUNK_OVERLAP = 150
-# DEFAULT_DATA_DIR = "data/documents"
+DEFAULT_DATA_DIR = "./documents"
 # DEFAULT_URL_LIST_FILE = "app/data/urls.txt"
 
 
@@ -17,7 +17,7 @@ def load_document_pdf(
     try:
         file_extension = os.path.splitext(file_path)[1].lower()
         if file_extension == ".pdf":
-            loader = pypdf.PyPDFLoader(file_path)
+            loader = PyPDFLoader(file_path)
             documents = loader.load()
             return documents
     except Exception as e:
@@ -160,10 +160,12 @@ if __name__ == "__main__":
     # Example usage
     try:
         content = process_document_for_rag(
-            
+            local_dir="./documents",  # Ganti dengan direktori lokal yang sesuai
             chunk_size=DEFAULT_CHUNK_SIZE,
             chunk_overlap=DEFAULT_CHUNK_OVERLAP
         )
+        print("Content loaded successfully:", len(content), "documents found.")
+        print("Example document content:", content[0].page_content[:100] + "...")  # Print first 100 characters of the first document
         print("Content loaded successfully:", content)
     except ValueError as e:
         print(e)

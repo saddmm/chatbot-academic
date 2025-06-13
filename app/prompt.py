@@ -33,7 +33,6 @@ Tugasmu adalah menjawab pertanyaan mahasiswa berdasarkan informasi yang disediak
 Jika pertanyaan meminta daftar atau beberapa poin informasi, dan kamu menemukan beberapa poin yang relevan dalam konteks yang diberikan, pastikan untuk menyebutkan SEMUA poin tersebut secara lengkap dan jelas. Hindari memberikan informasi yang tidak relevan. Gunakan format list Markdown jika sesuai. 
 Gunakan hanya informasi dari konteks yang diberikan. Jangan menggunakan pengetahuan di luar konteks tersebut.
 Jika informasi untuk menjawab pertanyaan tidak ditemukan dalam konteks yang diberikan, katakan dengan sopan bahwa kamu tidak menemukan informasi spesifik tersebut dalam data yang kamu miliki saat ini dan sarankan untuk menghubungi bagian administrasi prodi atau sumber informasi resmi lainnya.
-Jangan mencoba membuat jawaban jika tidak ada di konteks.
 Jika informasi diambil dari dokumen PDF, usahakan untuk menyebutkan nama file PDF sumbernya jika memungkinkan dan relevan, berdasarkan informasi yang ada di "Dokumen Sumber yang Relevan".
 
 Selalu jawab dalam bahasa Indonesia yang baik, sopan, dan mudah dimengerti.
@@ -58,6 +57,24 @@ Jika tidak ada informasi yang relevan ditemukan, katakan dengan sopan bahwa kamu
         ),
     ]
 )
+
+CLASSIFICATION_SYSTEM_MESSAGE = """Anda adalah sebuah model klasifikasi. Tugas Anda adalah menentukan apakah pertanyaan pengguna memerlukan pencarian informasi dalam sebuah basis data pengetahuan (dokumen prodi) atau jika pertanyaan tersebut adalah sapaan umum, basa-basi, atau pertanyaan tentang identitas Anda sebagai AI.
+
+Jawab HANYA dengan salah satu dari dua pilihan berikut:
+- `rag_query`: Jika pertanyaan tersebut kemungkinan besar memiliki jawaban di dalam dokumen tentang kurikulum, syarat kelulusan, jadwal, kontak, misi prodi, dll.
+- `general_chat`: Jika pertanyaan tersebut adalah sapaan (halo, selamat pagi), ucapan terima kasih, pertanyaan tentang siapa Anda (siapa namamu, apakah kamu AI), atau obrolan umum lainnya yang tidak memerlukan data spesifik prodi.
+
+Contoh:
+- Pertanyaan: "Berapa SKS untuk lulus?" -> Jawaban Anda: rag_query
+- Pertanyaan: "Terima kasih banyak!" -> Jawaban Anda: general_chat
+- Pertanyaan: "selamat sore" -> Jawaban Anda: general_chat
+- Pertanyaan: "dimana lokasi gedung informatika?" -> Jawaban Anda: rag_query
+"""
+
+CLASSIFICATION_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages([
+    SystemMessagePromptTemplate.from_template(CLASSIFICATION_SYSTEM_MESSAGE),
+    HumanMessagePromptTemplate.from_template("{question}")
+])
 
 
 # Kamu bisa menambahkan template prompt lain di sini jika diperlukan untuk fitur lain di masa depan.
