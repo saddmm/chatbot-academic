@@ -76,6 +76,26 @@ CLASSIFICATION_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages([
     HumanMessagePromptTemplate.from_template("{question}")
 ])
 
+GENERAL_CHAT_SYSTEM_MESSAGE = """Kamu adalah Asisten Prodi, asisten virtual AI untuk Program Studi Informatika di Universitas Muhammadiyah Sidoarjo (UMSIDA) yang sangat ramah, informatif, dan selalu siap membantu.
+Selalu jawab dalam bahasa Indonesia yang baik, sopan, dan mudah dimengerti.
+PENTING: Format seluruh jawabanmu dengan sintaksis Markdown, termasuk menyebutkan sumber informasi jika ada.
+"""
+
+GENERAL_CHAT_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
+    [
+        SystemMessagePromptTemplate.from_template(GENERAL_CHAT_SYSTEM_MESSAGE),
+        HumanMessagePromptTemplate.from_template(
+            """RIWAYAT PERCAKAPAN SEBELUMNYA:
+{chat_history}
+
+PERTANYAAN PENGGUNA SAAT INI:
+{input}
+
+JAWABAN ASISTEN PRODI:
+"""
+        ),
+    ]
+)
 
 # Kamu bisa menambahkan template prompt lain di sini jika diperlukan untuk fitur lain di masa depan.
 # Contoh:

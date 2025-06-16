@@ -78,12 +78,19 @@ def node_answer_rag(state: GraphState, llm, rag_prompt) -> str:
     
     return {"messages": [AIMessage(content=answer)]}
 
-def node_answer_general_chat(state: GraphState, llm) -> str:
+def node_answer_general_chat(state: GraphState, llm, general_chat_prompt) -> str:
     """
     Handle general chat questions that do not require document retrieval.
     """
+    general_chat_chain = general_chat_prompt | llm | StrOutputParser()
+
+    chat_history = state['messages'][:1]
     question = state["messages"][-1].content
-    response = llm.invoke({"question": question})
+
+    response = general_chat_chain.invoke({
+       "chat_history": chat_history,
+        "input": question
+    })
     
     print(f"Generated general chat response: {response}")
     
@@ -97,15 +104,14 @@ def node_classify_question(state: GraphState, llm, classification_prompt) -> str
     classification_chain = classification_prompt | llm | StrOutputParser()
 
     classification_result = classification_chain.invoke({"question": question})
+    cleaned_query_type = classification_result.strip().lower()
     
-    print(f"Classified question as: {classification_result}")
+    print(f"Classified question as: {cleaned_query_type}")
     
-    if classification_result == "rag_query":
+    if "rag_query" in cleaned_query_type:
         return {"query_type": "rag_query"}
-    elif classification_result == "general_chat":
-        return {"query_type": "general_chat"}
     else:
-        raise ValueError(f"Unknown query type: {classification_result}")
+        return {"query_type": "general_chat"}
     
 def decide_path(state: GraphState) -> str:
     if state["query_type"] == "rag_query":
@@ -115,7 +121,7 @@ def decide_path(state: GraphState) -> str:
         print(f"Deciding path for query type: {state['query_type']}")
         return "generate_answer_general"
 
-def create_graph(llm, retriever, rag_prompt, condense_prompt, classification_prompt ,memory):
+def create_graph(llm, retriever, rag_prompt, condense_prompt, classification_prompt, general_chat_prompt ,memory):
     """
     Membuat dan mengompilasi StateGraph LangGraph.
     """
@@ -127,7 +133,7 @@ def create_graph(llm, retriever, rag_prompt, condense_prompt, classification_pro
     workflow.add_node("condense_question", lambda state: node_condense_question(state, llm, condense_prompt))
     workflow.add_node("retrieve_documents", lambda state: node_retrieve_documents(state, retriever))
     workflow.add_node("generate_answer_rag", lambda state: node_answer_rag(state, llm, rag_prompt))
-    workflow.add_node("generate_answer_general", lambda state: node_answer_general_chat(state, llm))
+    workflow.add_node("generate_answer_general", lambda state: node_answer_general_chat(state, llm, general_chat_prompt))
 
     # Tentukan alur kerjanya
     workflow.set_entry_point("classify_question")

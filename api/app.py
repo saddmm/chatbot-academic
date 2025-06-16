@@ -3,12 +3,16 @@ from flask import Flask, abort, make_response, request, jsonify
 from app.chain import create_graph
 from app.document_processor import process_document_for_rag
 from app.llm_config import get_embedding, get_llm
-from app.prompt import CLASSIFICATION_PROMPT_TEMPLATE, CONDENS_QUESTION_PROMPT_TEMPLATE, RAG_PROMPT_TEMPLATE
+from app.prompt import CLASSIFICATION_PROMPT_TEMPLATE, CONDENS_QUESTION_PROMPT_TEMPLATE, GENERAL_CHAT_PROMPT_TEMPLATE, RAG_PROMPT_TEMPLATE
 from app.vectorstore import get_or_create_vector_store
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_core.messages import HumanMessage
+from langchain.globals import set_llm_cache
+from langchain.cache import SQLiteCache
 import sqlite3
 
+
+set_llm_cache(SQLiteCache(database_path=".langchain_cache.sqlite"))
 
 app = Flask(__name__)
 
@@ -23,7 +27,7 @@ try:
         vector_store_dir="vector_store",
         index_name="index_prodi",
     )
-    retriever = vector_store.as_retriever(search_kwargs={"k": 3})
+    retriever = vector_store.as_retriever(search_kwargs={"k": 2})
     sqlite_conn = sqlite3.connect("memory.sqlite", check_same_thread=False)
     memory = SqliteSaver(sqlite_conn)
     print("memory initialized with SqliteSaver.")
@@ -33,6 +37,7 @@ try:
         rag_prompt=RAG_PROMPT_TEMPLATE,
         condense_prompt=CONDENS_QUESTION_PROMPT_TEMPLATE,
         classification_prompt=CLASSIFICATION_PROMPT_TEMPLATE,
+        general_chat_prompt=GENERAL_CHAT_PROMPT_TEMPLATE,
         memory=memory
     )
     print("Komponen LLM dan Vector Store berhasil diinisialisasi.")
@@ -78,7 +83,7 @@ def chat():
         }
         response = make_response(jsonify(response_data))
         if not request.cookies.get("session_id"):
-            request.set_cookie("session_id", session_id, max_age=60*60*24)
+            response.set_cookie("session_id", session_id, max_age=60*60*24)
         
         return response
     except Exception as e:

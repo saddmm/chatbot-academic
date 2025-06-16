@@ -26,3 +26,6 @@ vector_store/*
 # Data (jika datanya sensitif atau sangat besar)
 # data/raw/*
 # !data/raw/.gitkeep
+
+*.sqlite
+/test
