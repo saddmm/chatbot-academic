@@ -3,12 +3,12 @@ from flask import Flask, abort, make_response, request, jsonify
 from app.chain import create_graph
 from app.document_processor import process_document_for_rag
 from app.llm_config import get_embedding, get_llm
-from app.prompt import CLASSIFICATION_PROMPT_TEMPLATE, CONDENS_QUESTION_PROMPT_TEMPLATE, GENERAL_CHAT_PROMPT_TEMPLATE, RAG_PROMPT_TEMPLATE
+from app.prompt import CONDENS_QUESTION_PROMPT_TEMPLATE, RAG_PROMPT_TEMPLATE
 from app.vectorstore import get_or_create_vector_store
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_core.messages import HumanMessage
 from langchain.globals import set_llm_cache
-from langchain.cache import SQLiteCache
+from langchain_community.cache import SQLiteCache
 import sqlite3
 
 
@@ -25,7 +25,7 @@ try:
         documents=document_chunks,
         embedding_model=embedding_model,
         vector_store_dir="vector_store",
-        index_name="index_prodi",
+        index_name="index_prodi2",
     )
     retriever = vector_store.as_retriever(search_kwargs={"k": 2})
     sqlite_conn = sqlite3.connect("memory.sqlite", check_same_thread=False)
@@ -36,8 +36,6 @@ try:
         retriever=retriever,
         rag_prompt=RAG_PROMPT_TEMPLATE,
         condense_prompt=CONDENS_QUESTION_PROMPT_TEMPLATE,
-        classification_prompt=CLASSIFICATION_PROMPT_TEMPLATE,
-        general_chat_prompt=GENERAL_CHAT_PROMPT_TEMPLATE,
         memory=memory
     )
     print("Komponen LLM dan Vector Store berhasil diinisialisasi.")
