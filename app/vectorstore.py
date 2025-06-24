@@ -1,105 +1,81 @@
 import os
-from langchain_community.vectorstores import FAISS
+from langchain_chroma import Chroma
 from langchain_core.documents import Document
-from typing import List
+from typing import List, Optional
 from langchain_ollama import OllamaEmbeddings
-
-
-def create_vector_store(
-    documents: List[Document], embedding_model: OllamaEmbeddings, index_path_prefix: str
-) -> FAISS:
-
-    # Load documents
-    if not documents:
-        raise ValueError("No documents provided to create vector store.")
-
-    try:
-        vectorstore = FAISS.from_documents(
-            documents=documents,
-            embedding=embedding_model,  # Replace with your embedding model
-        )
-
-        print(f"Vector store created with {len(documents)} documents.")
-        index_directory = os.path.dirname(index_path_prefix)
-        index_name = os.path.basename(index_path_prefix)
-        if index_directory and not os.path.exists(index_directory):
-            os.makedirs(index_directory)
-            print(f"Created directory for index: {index_directory}")
-
-        vectorstore.save_local(folder_path=index_directory, index_name=index_name)
-        print(f"Vector store saved to {index_path_prefix}.faiss and {index_path_prefix}.pkl")
-        return vectorstore
-    except Exception as e:
-        raise RuntimeError(f"Failed to create vector store: {str(e)}")
-
-
-def load_vector_store(
-    index_path_prefix: str, embedding_model: OllamaEmbeddings
-) -> FAISS:
-    """
-    Load a vector store from a local index file.
-
-    Args:
-        index_path_prefix (str): The path prefix for the index file.
-        embedding_model (OllamaEmbeddings): The embedding model to use.
-
-    Returns:
-        FAISS: The loaded vector store.
-    """
-    faiss_file = f"{index_path_prefix}.faiss"
-    pkl_file = f"{index_path_prefix}.pkl"
-    if os.path.exists(faiss_file) and os.path.exists(pkl_file):
-        print(f"Loading vector store from {faiss_file} and {pkl_file}")
-        try:
-            vectorstore = FAISS.load_local(
-                folder_path=os.path.dirname(index_path_prefix),
-                embeddings=embedding_model,
-                index_name=os.path.basename(index_path_prefix),
-                allow_dangerous_deserialization=True,  # Set to True if you trust the source of the index
-            )
-            return vectorstore
-        except Exception as e:
-            print(f"Error saat memuat vector store FAISS dari {index_path_prefix}: {e}")
-            print("Mungkin file index rusak atau model embedding tidak cocok.")
-            return None
-    else:
-        print(f"File index FAISS tidak ditemukan di {index_path_prefix}.faiss atau {index_path_prefix}.pkl.")
-        return None
-
+import chromadb
+from chromadb.config import Settings
 
 def get_or_create_vector_store(
+    embedding_model: OllamaEmbeddings,
+    documents: List[Document] = Optional[None],
+    vector_store_dir: str = "vector_store",
+    collection_name: str = "prodi_collection",
+) -> Chroma:
+    try:
+        persistent_client = chromadb.PersistentClient(
+            path=vector_store_dir,
+            settings=Settings(
+                persist_directory=vector_store_dir
+            )
+        )
+
+        collection = persistent_client.list_collections()
+        if any(c.name == collection_name for c in collection):
+            print(f"Memuat koleksi '{collection_name}' yang sudah ada.")
+            vector_store = Chroma(
+                collection_name=collection_name,
+                embedding_function=embedding_model,
+                client=persistent_client
+            )
+            return vector_store
+        else:
+            print(f"Membuat koleksi baru '{collection_name}' di direktori {vector_store_dir}.")
+            if not documents:
+                raise ValueError("Tidak ada dokumen yang diberikan untuk membuat vector store.")
+            vector_store = Chroma(
+                collection_name=collection_name,
+                embedding_function=embedding_model,
+                client=persistent_client,
+            )
+            vector_store.add_documents(documents)
+            return vector_store
+    except Exception as e:
+        print(f"Error saat membuat vector store: {e}")
+        return None
+
+def add_documents_to_vector_store(
     documents: List[Document],
     embedding_model: OllamaEmbeddings,
     vector_store_dir: str = "vector_store",
-    index_name: str = "index_prodi",
-) -> FAISS:
-    """
-    Get or create a vector store from documents.
+    collection_name: str = "prodi_collection",
+) -> Chroma:
+    try:
+        print(documents)
+        if os.path.exists(vector_store_dir) and os.path.exists(os.path.join(vector_store_dir, f"chroma.sqlite")):
+            print(f"Memuat koleksi '{collection_name}' yang sudah ada.")
+            vector_store = Chroma(
+                persist_directory=vector_store_dir,
+                collection_name=collection_name,
+                embedding_function=embedding_model
+            )
+            return vector_store
+        else:
+            print(f"Membuat koleksi baru '{collection_name}' di direktori {vector_store_dir}.")
+            if not documents:
+                raise ValueError("Tidak ada dokumen yang diberikan untuk membuat vector store.")
+            vector_store = Chroma(
+                collection_name=collection_name,
+                embedding_function=embedding_model,
+                persist_directory=vector_store_dir,
+                documents=documents
+            )
+            return vector_store
+    except Exception as e:
+        print(f"Error saat membuat vector store: {e}")
+        return None
 
-    Args:
-        documents (List[Document]): The documents to create the vector store from.
-        embedding_model (OllamaEmbeddings): The embedding model to use.
-        index_path_prefix (str): The path prefix for the index file.
-
-    Returns:
-        FAISS: The vector store.
-    """
-    if not os.path.exists(vector_store_dir):
-        os.makedirs(vector_store_dir)
-        print(f"Created vector store directory: {vector_store_dir}")
-
-    index_path_prefix = os.path.join(vector_store_dir, index_name)
-
-    vector_store = load_vector_store(index_path_prefix, embedding_model)    
-
-    if vector_store:
-        return vector_store
-    else:
-        print("Vector store not found, creating a new one.")
-        return create_vector_store(documents, embedding_model, index_path_prefix)
-
-
-if __name__ == '__main__':
+# if __name__ == '__main__':
     print("="*50)
     print(" MENJALANKAN TES MODUL VECTORSTORE UTILS ".center(50, "="))
     print("="*50)

@@ -1,3 +1,4 @@
+from pydoc import doc
 import uuid
 from flask import Flask, abort, make_response, request, jsonify
 from app.chain import create_graph
@@ -20,14 +21,15 @@ try:
     llm = get_llm()
     embedding_model = get_embedding()
 
-    document_chunks = process_document_for_rag(local_dir="documents",chunk_size=1000, chunk_overlap=150)
+    # document_chunks = process_document_for_rag(local_dir="documents",chunk_size=512, chunk_overlap=50)
+    # print(f"Jumlah dokumen yang diproses: {document_chunks}")
     vector_store = get_or_create_vector_store(
-        documents=document_chunks,
+        # documents=document_chunks,
         embedding_model=embedding_model,
-        vector_store_dir="vector_store",
-        index_name="index_prodi2",
     )
-    retriever = vector_store.as_retriever(search_kwargs={"k": 2})
+    retriever = vector_store.as_retriever(
+        search_kwargs={"k": 2}  # Mengambil 5 dokumen relevan
+    )
     sqlite_conn = sqlite3.connect("memory.sqlite", check_same_thread=False)
     memory = SqliteSaver(sqlite_conn)
     print("memory initialized with SqliteSaver.")
@@ -82,7 +84,7 @@ def chat():
         response = make_response(jsonify(response_data))
         if not request.cookies.get("session_id"):
             response.set_cookie("session_id", session_id, max_age=60*60*24)
-        
+        print(response)
         return response
     except Exception as e:
         print(f"Error during graph invocation: {e}")

@@ -3,7 +3,7 @@ langchain-ollama
 pypdf
 beautifulsoup4
 langchain-community
-faiss-cpu
+chromadb
 Flask
 langgraph
 langgraph-checkpoint-sqlite
