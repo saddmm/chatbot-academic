@@ -4,10 +4,11 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_transformers import BeautifulSoupTransformer
 
 DEFAULT_CHUNK_SIZE = 1000
 DEFAULT_CHUNK_OVERLAP = 150
-DEFAULT_DATA_DIR = "./documents"
+# DEFAULT_DATA_DIR = "./documents"
 # DEFAULT_URL_LIST_FILE = "app/data/urls.txt"
 
 
@@ -22,7 +23,7 @@ def load_document_pdf(
             return documents
     except Exception as e:
         raise ValueError(f"Failed to load PDF document from {file_path}: {str(e)}")
-    
+
 
 # Memproses dokumen dari URL untuk retrieval-augmented generation (RAG)
 def process_document_for_rag(
@@ -128,6 +129,48 @@ def load_web_url_content(
 
     except Exception as e:
         raise ValueError(f"Failed to load content from {url}: {str(e)}") from e
+
+
+def process_urls_for_rag(urls: List[str]) -> List:
+    """
+    Mengambil konten dari daftar URL, membersihkannya, dan memecahnya menjadi
+    dokumen yang siap untuk dimasukkan ke dalam RAG system.
+
+    Args:
+        urls (List[str]): Daftar URL yang akan di-scrape.
+
+    Returns:
+        List: Daftar objek Document yang sudah bersih dan terpecah (chunks).
+    """
+    if not urls:
+        return []
+
+    print(f"Memulai proses untuk {len(urls)} URL...")
+
+    # 1. Loading: Memuat konten HTML dari URL.
+    # Anda bisa memberikan beberapa URL sekaligus.
+    loader = WebBaseLoader(urls)
+    docs_raw = loader.load()
+    print(f"Berhasil memuat konten mentah dari {len(docs_raw)} halaman.")
+
+    # 2. Transforming: Membersihkan HTML dan mengekstrak teks yang relevan.
+    # Kita hanya akan mengambil teks dari tag <main> untuk fokus pada konten utama.
+    # Anda bisa menyesuaikan ini sesuai dengan struktur website target.
+    # Contoh lain: ["article", "div.content", "p"]
+    bs_transformer = BeautifulSoupTransformer()
+    docs_transformed = bs_transformer.transform_documents(
+        documents=docs_raw, tags_to_extract=["main", "article", "div.content", "p"]
+    )
+    print("Berhasil membersihkan HTML dan mengekstrak konten utama.")
+
+    # 3. Splitting: Memecah teks bersih menjadi potongan-potongan (chunks).
+    # Parameter ini bisa disesuaikan dengan yang Anda gunakan untuk dokumen lain.
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    print(text_splitter)
+    docs_split = text_splitter.split_documents(docs_transformed)
+    print(f"Berhasil memecah konten menjadi {len(docs_split)} dokumen (chunks).")
+
+    return docs_split
 
 
 # Memecah dokumen menjadi potongan-potongan teks

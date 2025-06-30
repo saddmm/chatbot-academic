@@ -18,6 +18,7 @@ env/
 
 # Environment variables
 .env
+urls.txt
 
 # Vector Store (jika besar dan tidak ingin di-commit, sesuaikan jika perlu)
 vector_store/*

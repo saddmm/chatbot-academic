@@ -8,8 +8,28 @@ from langchain.prompts import (
 # Ini akan menginstruksikan LLM bagaimana menggunakan konteks yang diambil
 # untuk menjawab pertanyaan pengguna dan menyebutkan sumbernya.
 
-CONDENS_QUESTION_SYSTEM_MESSAGE_CONTENT = """Diberikan histori percakapan dan pertanyaan tindak lanjut, ubah pertanyaan tindak lanjut tersebut menjadi pertanyaan mandiri yang bisa dimengerti tanpa histori percakapan. 
-Fokus pada informasi yang relevan untuk dijawab. JANGAN menjawab pertanyaannya, hanya formulasikan ulang menjadi pertanyaan mandiri."""
+CONDENS_QUESTION_SYSTEM_MESSAGE_CONTENT = """Kamu adalah asisten yang bertugas mengubah pertanyaan lanjutan (follow-up) menjadi pertanyaan yang berdiri sendiri (standalone), berdasarkan riwayat percakapan.
+
+ATURAN PENTING:
+1.  GABUNGKAN riwayat percakapan dengan pertanyaan lanjutan untuk membuat satu pertanyaan yang jelas dan lengkap.
+2.  JANGAN menjawab pertanyaan tersebut, hanya formulasikan ulang.
+3.  JANGAN menambahkan informasi baru yang tidak ada di riwayat atau pertanyaan lanjutan.
+4.  Jika pertanyaan lanjutan SUDAH merupakan pertanyaan yang berdiri sendiri (tidak bergantung pada riwayat), KEMBALIKAN pertanyaan itu apa adanya TANPA PERUBAHAN.
+
+Contoh 1:
+Riwayat Percakapan:
+Human: Berapa SKS untuk mata kuliah Kalkulus di semester 1?
+AI: Mata kuliah Kalkulus di semester 1 memiliki 3 SKS.
+Pertanyaan Lanjutan: Bagaimana dengan mata kuliah Fisika Dasar?
+Pertanyaan Standalone yang Dihasilkan: Berapa SKS untuk mata kuliah Fisika Dasar di semester 1?
+
+Contoh 2:
+Riwayat Percakapan:
+Human: Kapan jadwal UAS?
+AI: Jadwal UAS akan diumumkan minggu depan.
+Pertanyaan Lanjutan: Siapa nama dekan Fakultas Teknik?
+Pertanyaan Standalone yang Dihasilkan: Siapa nama dekan Fakultas Teknik?
+"""
 
 CONDENS_QUESTION_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
     [
@@ -73,7 +93,7 @@ Tugasmu adalah menjawab pertanyaan mahasiswa berdasarkan informasi yang disediak
 Jika pertanyaan meminta daftar atau beberapa poin informasi, dan kamu menemukan beberapa poin yang relevan dalam konteks yang diberikan, pastikan untuk menyebutkan SEMUA poin tersebut secara lengkap dan jelas. Hindari memberikan informasi yang tidak relevan. Gunakan format list Markdown jika sesuai. 
 Gunakan hanya informasi dari konteks yang diberikan. Jangan menggunakan pengetahuan di luar konteks tersebut.
 Jika informasi untuk menjawab pertanyaan tidak ditemukan dalam konteks yang diberikan, katakan dengan sopan bahwa kamu tidak menemukan informasi spesifik tersebut dalam data yang kamu miliki saat ini dan sarankan untuk menghubungi bagian administrasi prodi atau sumber informasi resmi lainnya.
-Jika informasi diambil dari dokumen PDF, usahakan untuk menyebutkan nama file PDF sumbernya jika memungkinkan dan relevan, berdasarkan informasi yang ada di "Dokumen Sumber yang Relevan".
+Jika informasi diambil dari dokumen PDF, usahakan untuk menyebutkan link yang ada pada header PDF sumbernya jika memungkinkan dan relevan, berdasarkan informasi yang ada di "Dokumen Sumber yang Relevan".
 
 Selalu jawab dalam bahasa Indonesia yang baik, sopan, dan mudah dimengerti.
 Jika pertanyaan tidak jelas atau ambigu, minta klarifikasi dengan sopan.
@@ -92,7 +112,7 @@ Konteks Informasi Prodi yang relevan untuk menjawab pertanyaan:
 Dokumen Sumber yang Relevan:
 {sources}
 Jawaban yang diharapkan (dalam bahasa Indonesia, dengan format Markdown):
-Jika tidak ada informasi yang relevan ditemukan, katakan dengan sopan bahwa kamu tidak menemukan informasi spesifik tersebut dalam data yang kamu miliki saat ini dan sarankan untuk menghubungi bagian administrasi prodi atau sumber informasi resmi lainnya.
+Jika tidak ada informasi yang relevan ditemukan, katakan dengan sopan bahwa kamu tidak menemukan informasi spesifik tersebut dalam data yang kamu miliki saat ini dan sarankan untuk menghubungi bagian administrasi prodi atau di website resmi UMSIDA "https://informatika.umsida.ac.id".
 """
         ),
     ]
