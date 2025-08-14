@@ -33,12 +33,37 @@ def get_or_create_vector_store(
             print(f"Membuat koleksi baru '{collection_name}' di direktori {vector_store_dir}.")
             if not documents:
                 raise ValueError("Tidak ada dokumen yang diberikan untuk membuat vector store.")
+            
+            # Print document chunks dan vektornya sebelum menyimpan ke ChromaDB
+            print(f"\n--- Preview Dokumen yang Akan Disimpan ke ChromaDB ---")
+            print(f"Total dokumen: {len(documents)}")
+            
+            for i, doc in enumerate(documents[:3]):  # Print 3 dokumen pertama sebagai sample
+                print(f"\n--- Dokumen {i+1} ---")
+                # Ambil kalimat pertama dari dokumen chunk
+                first_sentence = doc.page_content.split('.')[0][:300] + "..." if len(doc.page_content.split('.')[0]) > 300 else doc.page_content.split('.')[0]
+                print(f"Chunk (1 kalimat): {first_sentence}")
+                print(f"Metadata: {doc.metadata}")
+                
+                # Generate dan print vector representation
+                try:
+                    vector = embedding_model.embed_documents([doc.page_content])[0]
+                    print(f"Vector (dimensi {len(vector)}): {vector}")
+                    print(f"Vector magnitude: {sum(x**2 for x in vector)**0.5:.4f}")
+                except Exception as e:
+                    print(f"Error saat generate vector: {e}")
+            
+            if len(documents) > 3:
+                print(f"\n... dan {len(documents) - 3} dokumen lainnya akan disimpan")
+            
             vector_store = Chroma(
                 collection_name=collection_name,
                 embedding_function=embedding_model,
                 client=persistent_client,
             )
+            print(f"\nMenyimpan {len(documents)} dokumen ke ChromaDB...")
             vector_store.add_documents(documents)
+            print("✅ Dokumen berhasil disimpan ke ChromaDB!")
             return vector_store
     except Exception as e:
         print(f"Error saat membuat vector store: {e}")
@@ -64,12 +89,37 @@ def add_documents_to_vector_store(
             print(f"Membuat koleksi baru '{collection_name}' di direktori {vector_store_dir}.")
             if not documents:
                 raise ValueError("Tidak ada dokumen yang diberikan untuk membuat vector store.")
+            
+            # Print document chunks dan vektornya sebelum menyimpan ke ChromaDB
+            print(f"\n--- Preview Dokumen yang Akan Disimpan ke ChromaDB ---")
+            print(f"Total dokumen: {len(documents)}")
+            
+            for i, doc in enumerate(documents[:3]):  # Print 3 dokumen pertama sebagai sample
+                print(f"\n--- Dokumen {i+1} ---")
+                # Ambil kalimat pertama dari dokumen chunk
+                first_sentence = doc.page_content.split('.')[0][:100] + "..." if len(doc.page_content.split('.')[0]) > 100 else doc.page_content.split('.')[0]
+                print(f"Chunk (1 kalimat): {first_sentence}")
+                print(f"Metadata: {doc.metadata}")
+                
+                # Generate dan print vector representation
+                try:
+                    vector = embedding_model.embed_documents([doc.page_content])[0]
+                    print(f"Vector (dimensi {len(vector)}): [{vector[0]:.4f}, {vector[1]:.4f}, {vector[2]:.4f}, ..., {vector[-1]:.4f}]")
+                    print(f"Vector magnitude: {sum(x**2 for x in vector)**0.5:.4f}")
+                except Exception as e:
+                    print(f"Error saat generate vector: {e}")
+            
+            if len(documents) > 3:
+                print(f"\n... dan {len(documents) - 3} dokumen lainnya akan disimpan")
+            
+            print(f"\nMenyimpan {len(documents)} dokumen ke ChromaDB...")
             vector_store = Chroma(
                 collection_name=collection_name,
                 embedding_function=embedding_model,
                 persist_directory=vector_store_dir,
                 documents=documents
             )
+            print("✅ Dokumen berhasil disimpan ke ChromaDB!")
             return vector_store
     except Exception as e:
         print(f"Error saat membuat vector store: {e}")
