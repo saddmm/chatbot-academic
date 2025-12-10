@@ -1,100 +1,126 @@
 import os
-from pydoc import doc
-from pyexpat import model
-import uuid
-from flask import Flask, abort, make_response, request, jsonify
-from httpx import get
+from flask import Flask, request, jsonify
 from app.graph_builder import create_graph
-from app.document_processor import process_document_for_rag, process_urls_for_rag
-from app.llm_config import get_embedding, get_groq_llm, get_llm
+from app.llm_config import get_embedding, get_groq_llm
 from app.prompt import CLASSIFICATION_PROMPT_TEMPLATE, CONDENS_QUESTION_PROMPT_TEMPLATE, GENERAL_CHAT_PROMPT_TEMPLATE, RAG_PROMPT_TEMPLATE
 from app.vectorstore import get_or_create_vector_store
-from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_core.messages import HumanMessage
 from langchain.globals import set_llm_cache
 from langchain_community.cache import SQLiteCache
-import sqlite3
+from langgraph.checkpoint.memory import MemorySaver
 
+# Setup Cache agar hemat biaya API
 set_llm_cache(SQLiteCache(database_path=".langchain_cache.sqlite"))
 
 app = Flask(__name__)
 
-try:
-    llm = get_groq_llm(model_name="llama3-8b-8192", temperature=0.1)
-    # llm = get_llm(model_name="llama3.1:8b", temperature=0.5)
+# Global variables
+app_graph = None
+
+def initialize_chatbot():
+    """Inisialisasi komponen chatbot sekali saja saat startup."""
+    print("🚀 Memulai inisialisasi Chatbot...")
+    
+    # 1. Setup LLM & Embedding
+    llm = get_groq_llm(model_name="llama-3.1-8b-instant", temperature=0.1)
     embedding_model = get_embedding()
 
-    document_chunks = process_document_for_rag(local_dir="./documents", chunk_size=1000, chunk_overlap=150)
-    # print(f"Jumlah dokumen yang diproses: {document_chunks}")s
+    # 2. Setup Vector Store (Mode Load Only)
+    # Pastikan Anda sudah menjalankan script ingest data sebelumnya
     vector_store = get_or_create_vector_store(
-        documents=document_chunks,
         embedding_model=embedding_model,
+        documents=None, 
+        force_rebuild=False
     )
-    retriever = vector_store.as_retriever(
-        search_kwargs={"k": 3}  # Mengambil 5 dokumen relevan
-    )
-    sqlite_conn = sqlite3.connect("memory.sqlite", check_same_thread=False)
-    memory = SqliteSaver(sqlite_conn)
-    print("memory initialized with SqliteSaver.")
+    
+    retriever = None
+    if not vector_store:
+        print("⚠️ Vector Store kosong/gagal dimuat. Chatbot hanya bisa menjawab pertanyaan umum.")
+    else:
+        retriever = vector_store.as_retriever(
+            search_type="similarity", 
+            search_kwargs={"k": 5}
+        )
+
+    # 3. Build Graph
+    # Memory persistence biasanya ditangani di dalam create_graph menggunakan MemorySaver/Checkpointer
+    memory = MemorySaver()
     graph = create_graph(
         llm=llm,
         retriever=retriever,
         rag_prompt=RAG_PROMPT_TEMPLATE,
         condense_prompt=CONDENS_QUESTION_PROMPT_TEMPLATE,
-        memory=memory,
         classification_prompt=CLASSIFICATION_PROMPT_TEMPLATE,
-        general_chat_prompt=GENERAL_CHAT_PROMPT_TEMPLATE
+        general_chat_prompt=GENERAL_CHAT_PROMPT_TEMPLATE,
+        memory=memory
     )
-    print("Komponen LLM dan Vector Store berhasil diinisialisasi.")
+    
+    print("✅ Chatbot Siap!")
+    return graph
+
+# Inisialisasi saat file di-load
+try:
+    app_graph = initialize_chatbot()
 except Exception as e:
-    print(f"Error saat menginisialisasi LLM atau Vector Store: {e}")
-    graph = None
+    print(f"❌ Gagal inisialisasi app: {e}")
 
 @app.route("/chat", methods=["POST"])
 def chat():
+    if not app_graph:
+        return jsonify({"error": "Chatbot not initialized properly"}), 500
+        
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON body"}), 400
 
-    data = request.get_json()
+    user_message = data.get("message")
+    thread_id = data.get("thread_id", "default_thread")
+
+    if not user_message:
+        return jsonify({"error": "No message provided"}), 400
+
+    # Konfigurasi untuk session/memory per user
+    config = {"configurable": {"thread_id": thread_id}}
     
-    question = data.get("question")
-    session_id = request.cookies.get("session_id")
-
-
-    if not session_id:
-        session_id = str(uuid.uuid4()) # 1 day expiration
-    
-    if not graph:
-        abort(500, "Graph is not initialized. Please check the server logs for details.")
-    
-
     try:
-        config = {"configurable": {"thread_id": session_id}}
-
-        input_data = {
-            "messages": [HumanMessage(content=question)],
-            "question": question,
+        # Input state: Sesuaikan dengan definisi GraphState Anda
+        # Kita perlu mengirimkan 'messages' karena node di graph mengakses state["messages"][-1]
+        inputs = {
+            "question": user_message,
+            "messages": [HumanMessage(content=user_message)]
         }
+        
+        # Gunakan .invoke() untuk mendapatkan hasil akhir secara langsung
+        # .stream() lebih cocok jika Anda menggunakan WebSocket atau Server-Sent Events (SSE)
+        result = app_graph.invoke(inputs, config=config)
+        
+        # Logika Ekstraksi Jawaban (Menangani berbagai kemungkinan output state)
+        ai_response = ""
+        
+        # Prioritas 1: Jika output ada di key 'generation' (umum untuk RAG graph sederhana)
+        if "generation" in result and result["generation"]:
+            ai_response = result["generation"]
+            
+        # Prioritas 2: Jika output ada di key 'answer'
+        elif "answer" in result and result["answer"]:
+            ai_response = result["answer"]
+            
+        # Prioritas 3: Jika output ada di list 'messages' (umum untuk Chat graph)
+        elif "messages" in result and len(result["messages"]) > 0:
+            last_message = result["messages"][-1]
+            ai_response = last_message.content
+            
+        else:
+            ai_response = "Maaf, sistem tidak dapat menghasilkan jawaban (Format output tidak dikenali)."
+        
+        return jsonify({
+            "response": ai_response,
+            "thread_id": thread_id
+        })
 
-        print(f"Received question: {question} with session_id: {session_id}")
-
-        final_state = graph.invoke(
-            input_data,
-            config,
-        )
-
-        answer = final_state["messages"][-1].content
-        response_data = {
-            "answer": answer,
-            "session_id": session_id
-        }
-        response = make_response(jsonify(response_data))
-        if not request.cookies.get("session_id"):
-            response.set_cookie("session_id", session_id, max_age=60*60*24)
-        print(response)
-        return response
     except Exception as e:
-        print(f"Error during graph invocation: {e}")
+        print(f"Error processing chat: {e}")
         return jsonify({"error": str(e)}), 500
 
-
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)  # Set debug=True for development purposes
+    app.run(debug=True, port=5000)

@@ -1,4 +1,7 @@
+from fileinput import filename
+import json
 import os
+import re
 from typing import Any, List, Optional, Dict
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -7,28 +10,73 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.document_transformers import BeautifulSoupTransformer
 
 DEFAULT_CHUNK_SIZE = 1000
-DEFAULT_CHUNK_OVERLAP = 150
-# DEFAULT_DATA_DIR = "./documents"
-# DEFAULT_URL_LIST_FILE = "app/data/urls.txt"
+DEFAULT_CHUNK_OVERLAP = 200  # UPGRADE: Overlap diperbesar agar konteks terjaga
+
+
+def clean_text(text: str) -> str:
+    """Membersihkan teks dari artefak PDF umum."""
+    # Hapus header/footer halaman umum (contoh: "Halaman 1 dari 10")
+    text = re.sub(r'Halaman \d+ dari \d+', '', text, flags=re.IGNORECASE)
+    # Hapus spasi berlebih dan newline aneh
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
 
 
 def load_document_pdf(
     file_path: str
 ) -> List[Document]:
     try:
-        file_extension = os.path.splitext(file_path)[1].lower()
-        if file_extension == ".pdf":
-            loader = PyPDFLoader(file_path)
-            documents = loader.load()
-            return documents
+        loader = PyPDFLoader(file_path)
+        documents = loader.load()
+
+        # UPGRADE: Bersihkan teks dan tambah metadata filename
+        filename = os.path.basename(file_path)
+        for doc in documents:
+            doc.page_content = clean_text(doc.page_content)
+            doc.metadata["source"] = filename  # Pastikan source adalah nama file
+
+        return documents
     except Exception as e:
-        raise ValueError(f"Failed to load PDF document from {file_path}: {str(e)}")
+        print(f"Error loading PDF {file_path}: {e}")
+        return []
+
+
+def load_custom_json(file_path: str) -> List[Document]:
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        documents = []
+        for item in data:
+            content = item.get("page_content")
+            metadata = item.get("metadata", {})
+            
+            # --- PERBAIKAN DISINI ---
+            # Gabungkan Title/Kategori ke dalam Content agar pencarian lebih kuat
+            title = metadata.get("title", "")
+            category = metadata.get("category", "")
+            
+            # Format baru: "[Kategori] Judul: Isi konten..."
+            # Ini membantu vector store menemukan dokumen berdasarkan judulnya juga
+            enriched_content = f"[{category}] {title}: {content}"
+            
+            if content:
+                # Gunakan enriched_content sebagai page_content
+                doc = Document(page_content=enriched_content, metadata=metadata)
+                documents.append(doc)
+                
+        print(f"✅ Berhasil memuat {len(documents)} dokumen dari {os.path.basename(file_path)}")
+        return documents
+    except Exception as e:
+        print(f"❌ Gagal memuat JSON {file_path}: {e}")
+        return []
 
 
 # Memproses dokumen dari URL untuk retrieval-augmented generation (RAG)
 def process_document_for_rag(
     local_dir: Optional[str] = None,
     url_list_file_path: Optional[str] = None,
+    json_file_path: Optional[str] = None,
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
 ) -> List[Document]:
@@ -50,9 +98,14 @@ def process_document_for_rag(
             else:
                 for file_name in os.listdir(local_dir):
                     file_path = os.path.join(local_dir, file_name)
-                    if os.path.isfile(file_path):
-                        print(f"Memproses file: {file_path}")
-                        documents = load_document_pdf(file_path)
+                    # if file_name.endswith(".pdf"):
+                    #     print(f"Memproses file: {file_path}")
+                    #     documents = load_document_pdf(file_path)
+                    #     if documents:
+                    #         loaded_documents.extend(documents)
+                    if file_name.endswith(".json"):
+                        print(f"Memproses file JSON khusus: {file_path}")
+                        documents = load_custom_json(file_path)
                         if documents:
                             loaded_documents.extend(documents)
 
@@ -192,8 +245,7 @@ def split_documents(
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
-        length_function=len,
-        add_start_index=True,
+        separators=["\n\n", "\n", ". ", " ", ""]  # Prioritas pemisahan
     )
     split_docs = text_splitter.split_documents(documents)
     return split_docs
@@ -203,7 +255,7 @@ if __name__ == "__main__":
     # Example usage
     try:
         content = process_document_for_rag(
-            local_dir="./documents",  # Ganti dengan direktori lokal yang sesuai
+            local_dir="./documents",
             chunk_size=DEFAULT_CHUNK_SIZE,
             chunk_overlap=DEFAULT_CHUNK_OVERLAP
         )
