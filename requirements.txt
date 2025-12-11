@@ -7,3 +7,4 @@ chromadb
 Flask
 langgraph
 langgraph-checkpoint-sqlite
+flask-cors

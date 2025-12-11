@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from flask import Flask, request, jsonify
 from app.graph_builder import create_graph
 from app.llm_config import get_embedding, get_groq_llm
@@ -7,12 +8,14 @@ from app.vectorstore import get_or_create_vector_store
 from langchain_core.messages import HumanMessage
 from langchain.globals import set_llm_cache
 from langchain_community.cache import SQLiteCache
-from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.sqlite import SqliteSaver
+from flask_cors import CORS
 
 # Setup Cache agar hemat biaya API
 set_llm_cache(SQLiteCache(database_path=".langchain_cache.sqlite"))
 
 app = Flask(__name__)
+CORS(app)
 
 # Global variables
 app_graph = None
@@ -38,13 +41,15 @@ def initialize_chatbot():
         print("⚠️ Vector Store kosong/gagal dimuat. Chatbot hanya bisa menjawab pertanyaan umum.")
     else:
         retriever = vector_store.as_retriever(
-            search_type="mmr", 
+            search_type="similarity", 
             search_kwargs={"k": 5}
         )
 
     # 3. Build Graph
     # Memory persistence biasanya ditangani di dalam create_graph menggunakan MemorySaver/Checkpointer
-    memory = MemorySaver()
+    conn = sqlite3.connect('chat_history.sqlite', check_same_thread=False)
+    memory = SqliteSaver(connection=conn, table_name="chat_history")
+
     graph = create_graph(
         llm=llm,
         retriever=retriever,

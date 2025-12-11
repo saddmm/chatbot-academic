@@ -133,23 +133,29 @@ def decide_path(state: GraphState) -> str:
         return "generate_answer_general"
 
 def format_docs(docs):
-    """
-    Menggabungkan konten dokumen DAN metadata penting (seperti URL)
-    agar terbaca oleh LLM.
-    """
     formatted_docs = []
     for doc in docs:
+        # 1. Ambil URL Link (Dokumen/Web)
+        url = (doc.metadata.get("url") or 
+               doc.metadata.get("direct_link") or 
+               doc.metadata.get("web_link") or 
+               doc.metadata.get("link") or 
+               "")
+        
+        # 2. Ambil URL Gambar (BARU)
+        image_url = doc.metadata.get("image_url", "")
+        
+        source = doc.metadata.get("source", "Dokumen")
         content = doc.page_content
-        meta = doc.metadata
         
-        # Coba ambil URL dari berbagai kemungkinan key metadata
-        url = meta.get('url') or meta.get('direct_link') or meta.get('web_link') or meta.get('link')
-        source = meta.get('source', 'Dokumen')
-        
-        # Tempelkan URL ke konten teks agar LLM melihatnya
+        # 3. Susun String Konteks
         doc_str = f"Sumber: {source}\nIsi: {content}"
+        
         if url:
             doc_str += f"\nLink Terkait: {url}"
+            
+        if image_url:
+            doc_str += f"\nFoto Fasilitas: {image_url}" 
             
         formatted_docs.append(doc_str)
         
