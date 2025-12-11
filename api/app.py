@@ -38,7 +38,7 @@ def initialize_chatbot():
         print("⚠️ Vector Store kosong/gagal dimuat. Chatbot hanya bisa menjawab pertanyaan umum.")
     else:
         retriever = vector_store.as_retriever(
-            search_type="similarity", 
+            search_type="mmr", 
             search_kwargs={"k": 5}
         )
 

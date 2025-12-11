@@ -64,15 +64,26 @@ def node_answer_rag(state: GraphState, llm, rag_prompt) -> str:
     message = state["messages"]
     sources = state["sources"]
 
-    rag_chain = create_stuff_documents_chain(llm, rag_prompt)
+    # --- PERUBAHAN DIMULAI DARI SINI ---
+    
+    # 1. Panggil format_docs untuk mengubah List[Document] menjadi String
+    #    Ini akan menempelkan URL/Link ke dalam teks konteks agar terbaca LLM
+    formatted_context = format_docs(documents)
+
+    # 2. Gunakan Chain standar (Prompt | LLM | Parser)
+    #    Kita TIDAK menggunakan create_stuff_documents_chain lagi karena 
+    #    kita sudah memformat dokumennya sendiri secara manual di atas.
+    rag_chain = rag_prompt | llm | StrOutputParser()
+
     answer = rag_chain.invoke(
         {
             "question": question,
-            "context": documents,
+            "context": formatted_context, # Masukkan string yang sudah ada URL-nya
             "chat_history": message,
             "sources": sources,
         }
     )
+    # --- PERUBAHAN SELESAI ---
 
     print(f"Generated answer: {answer}")
     
@@ -120,6 +131,29 @@ def decide_path(state: GraphState) -> str:
     else:
         print(f"Deciding path for query type: {state['query_type']}")
         return "generate_answer_general"
+
+def format_docs(docs):
+    """
+    Menggabungkan konten dokumen DAN metadata penting (seperti URL)
+    agar terbaca oleh LLM.
+    """
+    formatted_docs = []
+    for doc in docs:
+        content = doc.page_content
+        meta = doc.metadata
+        
+        # Coba ambil URL dari berbagai kemungkinan key metadata
+        url = meta.get('url') or meta.get('direct_link') or meta.get('web_link') or meta.get('link')
+        source = meta.get('source', 'Dokumen')
+        
+        # Tempelkan URL ke konten teks agar LLM melihatnya
+        doc_str = f"Sumber: {source}\nIsi: {content}"
+        if url:
+            doc_str += f"\nLink Terkait: {url}"
+            
+        formatted_docs.append(doc_str)
+        
+    return "\n\n---\n\n".join(formatted_docs)
 
 def create_graph(llm, retriever, rag_prompt, condense_prompt, classification_prompt, general_chat_prompt ,memory):
     """
