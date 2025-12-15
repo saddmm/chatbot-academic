@@ -29,4 +29,6 @@ vector_store/*
 # !data/raw/.gitkeep
 
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
 /test

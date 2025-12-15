@@ -95,7 +95,8 @@ def node_answer_general_chat(state: GraphState, llm, general_chat_prompt) -> str
     """
     general_chat_chain = general_chat_prompt | llm | StrOutputParser()
 
-    chat_history = state['messages'][:1]
+    # Ambil semua pesan kecuali yang terakhir (pertanyaan saat ini) sebagai history
+    chat_history = state['messages'][:-1]
     question = state["messages"][-1].content
 
     response = general_chat_chain.invoke({
@@ -119,7 +120,8 @@ def node_classify_question(state: GraphState, llm, classification_prompt) -> str
     
     print(f"Classified question as: {cleaned_query_type}")
     
-    if "rag_query" in cleaned_query_type:
+    # Check for rag_query with underscore or space, or if it contains "rag"
+    if "rag_query" in cleaned_query_type or "rag query" in cleaned_query_type or "rag" in cleaned_query_type:
         return {"query_type": "rag_query"}
     else:
         return {"query_type": "general_chat"}

@@ -1,66 +1,411 @@
 [
     {
-        "page_content": "Daftar Lengkap Laboratorium Informatika UMSIDA beserta Foto Fasilitasnya:\n\n1. Laboratorium Sistem Cerdas\n   Fokus: Software Engineering, Programming, dan Computer Science. Mengembangkan basis kode video game dan alat pengembangan software.\n\n2. Laboratorium Game dan Multimedia\n   Fokus: Mengkoordinasikan penciptaan video game (karakter, level design, animasi, art).\n\n3. Laboratorium Jaringan (Siskom)\n   Fokus: Analisis jaringan, perekayasaan sistem, dan evaluasi sistem jaringan.\n\n4. Laboratorium Algoritma dan Pemrograman\n   Fokus: Penunjang praktikum dasar, penelitian skripsi, dan riset dosen.\n\n5. Laboratorium Rekayasa Perangkat Lunak (RPL)\n   Fokus: Analisis kebutuhan, perancangan, QA, dan rekayasa ulang software.\n\n6. Laboratorium Komputasi\n   Fokus: Menunjang praktikum lanjut dan penelitian skripsi.\n\n7. Laboratorium Umum\n   Fokus: Praktikum umum, riset, dan penelitian dosen/mahasiswa.\n\n8. Laboratorium Komputer Modern\n   Fokus: Fasilitas komputer spesifikasi tinggi untuk belajar.\n   [Lihat Foto Lab Modern](https://informatika.umsida.ac.id/wp-content/uploads/2024/02/WhatsApp-Image-2023-08-31-at-10.47.11-scaled.jpg)",
+        "page_content": "Laboratorium Sistem Cerdas (Informatika UMSIDA). Fokus utama: Software Engineering, Programming, dan Computer Science. Aktivitas meliputi pengembangan basis kode video game dan alat pengembangan software.",
         "metadata": {
             "source": "Layanan Kemahasiswaan.pdf",
             "category": "Fasilitas",
-            "title": "Daftar Laboratorium Lengkap"
+            "title": "Lab Sistem Cerdas"
         }
     },
     {
-        "page_content": "Daftar Fasilitas Umum Kampus UMSIDA:\n\n1. Masjid Kampus UMSIDA\n   Tempat ibadah yang nyaman.\n   [Lihat Foto Masjid](https://informatika.umsida.ac.id/wp-content/uploads/2024/02/masjidfix.jpg)\n\n2. Gedung Perkuliahan\n   Ruang kelas yang nyaman untuk proses belajar mengajar.\n   [Lihat Foto Gedung](https://informatika.umsida.ac.id/wp-content/uploads/2024/02/kamp2-drone-2-e1518201208452.jpg)\n\n3. Area Parkir\n   Area parkir kendaraan yang luas.\n   [Lihat Foto Parkir](https://informatika.umsida.ac.id/wp-content/uploads/2024/02/WhatsApp-Image-2023-08-31-at-10.47.08-scaled.jpg)\n\n4. Ruang Baca dan Perpustakaan\n   Fasilitas literasi dan referensi mahasiswa.\n   [Lihat Foto Ruang Baca](https://informatika.umsida.ac.id/wp-content/uploads/2024/02/WhatsApp-Image-2021-11-19-at-13.06.50-2-1024x768-1.jpeg)\n\n5. Kantin Universitas\n   Pusat kuliner mahasiswa.\n   [Lihat Foto Kantin](https://informatika.umsida.ac.id/wp-content/uploads/2024/02/IMG20231109131643-1-1024x768-1.jpg)",
+        "page_content": "Laboratorium Game dan Multimedia (Informatika UMSIDA). Fokus utama: Mengkoordinasikan penciptaan video game, termasuk perancangan karakter, level design, animasi, dan art.",
         "metadata": {
             "source": "Layanan Kemahasiswaan.pdf",
             "category": "Fasilitas",
-            "title": "Fasilitas Umum Kampus"
+            "title": "Lab Game Multimedia"
         }
     },
     {
-        "page_content": "Download Jadwal Praktikum Semester Genap 2024/2025:\n\n1. Jadwal Praktikum Algoritma dan Struktur Data\n   [Download PDF](https://informatika.umsida.ac.id/wp-content/uploads/2025/03/PRAKTIKUM-ALGORITMA-DAN-STRUKTUR-DATA-2024-2025.pdf)\n\n2. Jadwal Praktikum Basis Data\n   [Download PDF](https://informatika.umsida.ac.id/wp-content/uploads/2025/03/PRAKTIKUM-BASIS-DATA-2024-2025.pdf)\n\n3. Jadwal Praktikum PBO (Pemrograman Berorientasi Objek)\n   [Download PDF](https://informatika.umsida.ac.id/wp-content/uploads/2025/03/PRAKTIKUM-PBO-2024-2025.pdf)\n\n4. Jadwal Praktikum Jaringan Komputer (Jarkom)\n   [Download PDF](https://informatika.umsida.ac.id/wp-content/uploads/2025/03/PRAKTIKUM-JARINGAN-KOMPUTER-2024-2025.pdf)",
+        "page_content": "Laboratorium Jaringan / Siskom (Informatika UMSIDA). Fokus utama: Analisis jaringan, perekayasaan sistem, dan evaluasi sistem jaringan komputer.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas",
+            "title": "Lab Jaringan"
+        }
+    },
+    {
+        "page_content": "Laboratorium Algoritma dan Pemrograman (Informatika UMSIDA). Fokus utama: Penunjang praktikum dasar, penelitian skripsi mahasiswa, dan riset dosen.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas",
+            "title": "Lab Algoritma"
+        }
+    },
+    {
+        "page_content": "Laboratorium Rekayasa Perangkat Lunak (RPL) Informatika UMSIDA. Fokus utama: Analisis kebutuhan sistem, perancangan, Quality Assurance (QA), dan rekayasa ulang software.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas",
+            "title": "Lab RPL"
+        }
+    },
+    {
+        "page_content": "Laboratorium Komputasi Informatika UMSIDA. Fokus utama: Menunjang praktikum tingkat lanjut dan penelitian skripsi.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas",
+            "title": "Lab Komputasi"
+        }
+    },
+    {
+        "page_content": "Fasilitas Masjid Kampus UMSIDA. Tempat ibadah yang nyaman bagi civitas akademika.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas Umum",
+            "title": "Masjid Kampus",
+            "image_url": "https://informatika.umsida.ac.id/wp-content/uploads/2024/02/masjidfix.jpg"
+        }
+    },
+    {
+        "page_content": "Fasilitas Gedung Perkuliahan UMSIDA. Ruang kelas yang nyaman untuk mendukung proses belajar mengajar.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas Umum",
+            "title": "Gedung Kuliah",
+            "image_url": "https://informatika.umsida.ac.id/wp-content/uploads/2024/02/kamp2-drone-2-e1518201208452.jpg"
+        }
+    },
+    {
+        "page_content": "Fasilitas Area Parkir UMSIDA. Area parkir kendaraan yang luas untuk mahasiswa dan dosen.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas Umum",
+            "title": "Area Parkir",
+            "image_url": "https://informatika.umsida.ac.id/wp-content/uploads/2024/02/WhatsApp-Image-2023-08-31-at-10.47.08-scaled.jpg"
+        }
+    },
+    {
+        "page_content": "Fasilitas Ruang Baca dan Perpustakaan UMSIDA. Menyediakan referensi dan literasi bagi mahasiswa.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas Umum",
+            "title": "Perpustakaan",
+            "image_url": "https://informatika.umsida.ac.id/wp-content/uploads/2024/02/WhatsApp-Image-2021-11-19-at-13.06.50-2-1024x768-1.jpeg"
+        }
+    },
+    {
+        "page_content": "Fasilitas Kantin Universitas UMSIDA. Pusat kuliner yang higienis untuk mahasiswa.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Fasilitas Umum",
+            "title": "Kantin",
+            "image_url": "https://informatika.umsida.ac.id/wp-content/uploads/2024/02/IMG20231109131643-1-1024x768-1.jpg"
+        }
+    },
+    {
+        "page_content": "Jadwal Praktikum Algoritma dan Struktur Data Semester Genap 2024/2025 dapat diunduh disini.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Download",
+            "title": "Jadwal Praktikum Algoritma",
+            "direct_link": "https://informatika.umsida.ac.id/wp-content/uploads/2025/03/PRAKTIKUM-ALGORITMA-DAN-STRUKTUR-DATA-2024-2025.pdf"
+        }
+    },
+    {
+        "page_content": "Jadwal Praktikum Basis Data Semester Genap 2024/2025 dapat diunduh disini.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Download",
+            "title": "Jadwal Praktikum Basis Data",
+            "direct_link": "https://informatika.umsida.ac.id/wp-content/uploads/2025/03/PRAKTIKUM-BASIS-DATA-2024-2025.pdf"
+        }
+    },
+    {
+        "page_content": "Jadwal Praktikum PBO (Pemrograman Berorientasi Objek) Semester Genap 2024/2025 dapat diunduh disini.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Download",
+            "title": "Jadwal Praktikum PBO",
+            "direct_link": "https://informatika.umsida.ac.id/wp-content/uploads/2025/03/PRAKTIKUM-PBO-2024-2025.pdf"
+        }
+    },
+    {
+        "page_content": "Jadwal Praktikum Jaringan Komputer (Jarkom) Semester Genap 2024/2025 dapat diunduh disini.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Download",
+            "title": "Jadwal Praktikum Jarkom",
+            "direct_link": "https://informatika.umsida.ac.id/wp-content/uploads/2025/03/PRAKTIKUM-JARINGAN-KOMPUTER-2024-2025.pdf"
+        }
+    },
+    {
+        "page_content": "Layanan Administrasi Surat Online Informatika. Mahasiswa dapat mengajukan Suket Aktif Kuliah, Surat Magang, Penelitian, dan Tugas Akhir melalui formulir ini.",
         "metadata": {
             "source": "Layanan Kemahasiswaan.pdf",
             "category": "Layanan",
-            "title": "Jadwal Praktikum Lengkap"
+            "title": "Formulir Surat Online",
+            "direct_link": "https://docs.google.com/forms/d/1ijKTVs1T546WU__zqqEc9JeSfj2HoGVWFqhcGaJr-bs/viewform?edit_requested=true"
         }
     },
     {
-        "page_content": "Layanan Administrasi Surat Online:\nMahasiswa dapat mengajukan surat melalui Google Form untuk keperluan: Suket Aktif Kuliah, Surat Keterangan Magang, Surat Penelitian, dan Surat Tugas Akhir.\n\n[Link Formulir Pengajuan Surat](https://docs.google.com/forms/d/1ijKTVs1T546WU__zqqEc9JeSfj2HoGVWFqhcGaJr-bs/viewform?edit_requested=true)",
-        "metadata": {
-            "source": "Layanan Kemahasiswaan.pdf",
-            "category": "Layanan",
-            "title": "Formulir Surat Online"
-        }
-    },
-    {
-        "page_content": "Organisasi Mahasiswa Informatika:\n\n1. Himpunan Mahasiswa Informatika (HIMATIKA)\n   Wadah pengembangan pola pikir, kepribadian, dan potensi intelektual mahasiswa berlandaskan nilai Islam.\n    [Instagram HIMATIKA](https://www.instagram.com/himatika_umsida/)\n\n2. Asisten Laboratorium Informatika (ASLAB)\n   Bertugas mewujudkan laboratorium bermutu, menyelenggarakan praktikum, dan sarana penelitian.\n   [Instagram ASLAB](https://www.instagram.com/aslabinf.umsida/)",
+        "page_content": "Himpunan Mahasiswa Informatika (HIMATIKA). Wadah pengembangan pola pikir, kepribadian, dan potensi intelektual mahasiswa berlandaskan nilai Islam.",
         "metadata": {
             "source": "Layanan Kemahasiswaan.pdf",
             "category": "Organisasi",
-            "title": "Organisasi Mahasiswa"
+            "title": "HIMATIKA",
+            "social_link": "https://www.instagram.com/himatika_umsida/"
         }
     },
     {
-        "page_content": "Visi, Misi, dan Tujuan Program Studi Informatika UMSIDA:\n\nVISI:\nMenghasilkan lulusan yang profesional, unggul, inovatif, dan kompetitif dalam rekayasa perangkat lunak dan sistem cerdas yang adaptif terhadap perkembangan IPTEKS berdasarkan nilai-nilai Islam untuk kesejahteraan masyarakat tingkat ASEAN pada tahun 2038.\n\nMISI:\n1. Menyelenggarakan pendidikan unggul & inovatif berbasis nilai Islam.\n2. Melakukan penelitian IPTEKS untuk kesejahteraan masyarakat.\n3. Pengabdian masyarakat bereputasi internasional.\n4. Kerjasama berkelanjutan dalam & luar negeri.\n5. Tata kelola profesional & pembinaan kemahasiswaan.\n\nTUJUAN:\nMenghasilkan lulusan unggul, produk penelitian pendukung pembelajaran, teknologi tepat guna, serta kerjasama pendidikan yang berkelanjutan.\n\nPROFIL LULUSAN:\n1. Berkarakter uswah & inovatif.\n2. Mampu analisis computing & solusi dinamis.\n3. Mampu desain & implementasi solusi mandiri.\n4. Komunikasi baik & profesional.",
+        "page_content": "Asisten Laboratorium Informatika (ASLAB). Organisasi yang bertugas mewujudkan laboratorium bermutu, menyelenggarakan praktikum, dan sarana penelitian.",
+        "metadata": {
+            "source": "Layanan Kemahasiswaan.pdf",
+            "category": "Organisasi",
+            "title": "ASLAB",
+            "social_link": "https://www.instagram.com/aslabinf.umsida/"
+        }
+    },
+    {
+        "page_content": "Visi Program Studi Informatika UMSIDA: Menghasilkan lulusan yang profesional, unggul, inovatif, dan kompetitif dalam rekayasa perangkat lunak dan sistem cerdas yang adaptif terhadap perkembangan IPTEKS berdasarkan nilai-nilai Islam untuk kesejahteraan masyarakat tingkat ASEAN pada tahun 2038.",
         "metadata": {
             "source": "Visi dan Misi.pdf",
             "category": "Profil Prodi",
-            "title": "Visi Misi Lengkap"
+            "title": "Visi Prodi"
         }
     },
     {
-        "page_content": "Sebaran Mata Kuliah Per Semester (Kurikulum):\n\nSemester 1: Kemanusiaan dan Keimanan, Algoritma dan Pemrograman, Sistem Digital, Arsitektur Komputer, Kalkulus, Fisika.\n\nSemester 2: Ibadah Akhlak, Algoritma & Struktur Data, Basis Data, Interaksi Manusia Komputer, Matematika Diskrit, Teori Bahasa Otomata.\n\nSemester 3: Kemuhammadiyahan, Pemrograman Web, Matematika Rekayasa, Aljabar Linier, Sistem Informasi, Sistem Operasi.\n\nSemester 4: Sains Islam, Metode Numerik, Statistika, Jaringan Komputer, PBO, Audit Sistem, App Web.\n\nSemester 5: RPL, Pemodelan Game, Magang Industri, Grafika Komputer, AI, Mobile Programming, Data Mining, Metopen.\n\nSemester 6: Kewirausahaan, Machine Learning, Optimasi, Citra Digital, KKN, + Mata Kuliah Pilihan (IoT, Keamanan Sistem, Terdistribusi, Manajemen Proyek).\n\nSemester 7: Kewarganegaraan, B.Inggris, B.Indonesia, Pancasila, Etika Profesi, + Mata Kuliah Pilihan (Multimedia, Game Prog, Web Mining, Ethical Hacking).\n\nSemester 8: Skripsi (6 SKS).",
+        "page_content": "Misi Program Studi Informatika UMSIDA: 1. Pendidikan unggul & inovatif berbasis nilai Islam. 2. Penelitian IPTEKS untuk kesejahteraan. 3. Pengabdian masyarakat bereputasi internasional. 4. Kerjasama berkelanjutan. 5. Tata kelola profesional & pembinaan kemahasiswaan.",
+        "metadata": {
+            "source": "Visi dan Misi.pdf",
+            "category": "Profil Prodi",
+            "title": "Misi Prodi"
+        }
+    },
+    {
+        "page_content": "Tujuan Program Studi Informatika: Menghasilkan lulusan unggul, produk penelitian pendukung pembelajaran, teknologi tepat guna, serta kerjasama pendidikan yang berkelanjutan.",
+        "metadata": {
+            "source": "Visi dan Misi.pdf",
+            "category": "Profil Prodi",
+            "title": "Tujuan Prodi"
+        }
+    },
+    {
+        "page_content": "Profil Lulusan Informatika UMSIDA: 1. Berkarakter uswah & inovatif. 2. Mampu analisis computing & solusi dinamis. 3. Mampu desain & implementasi solusi mandiri. 4. Komunikasi baik & profesional.",
+        "metadata": {
+            "source": "Visi dan Misi.pdf",
+            "category": "Profil Prodi",
+            "title": "Profil Lulusan"
+        }
+    },
+    {
+        "page_content": "Mata Kuliah Semester 1 Informatika: Kemanusiaan dan Keimanan, Algoritma dan Pemrograman, Sistem Digital, Arsitektur Komputer, Kalkulus, Fisika.",
         "metadata": {
             "source": "Sebaran Mata Kuliah.pdf",
             "category": "Kurikulum",
-            "title": "Kurikulum Lengkap"
+            "semester": "1",
+            "title": "Matkul Semester 1"
         }
     },
     {
-        "page_content": "Program MBKM dan Kegiatan Penunjang:\n\n1. Magang Bersertifikat (1-2 Semester)\n   Memberikan pengalaman industri agar siap kerja. Industri dapat talenta, mahasiswa aplikasi ilmu.\n\n2. Pertukaran Mahasiswa\n   Belajar di perguruan tinggi lain selama 1 semester untuk softskills & persatuan. Nilai disetarakan.\n\n3. Studi Proyek Independen\n   Mengembangkan proyek sosial berkelompok untuk memecahkan masalah masyarakat.\n\n4. Pelatihan & Workshop\n   Rutin diadakan (Web Dev, Python, Machine Learning) untuk skill tambahan.\n\n5. Sertifikasi Profesi (LSP)\n   Skema 'Junior Network Administrator' berlisensi BNSP.",
+        "page_content": "Mata Kuliah Semester 2 Informatika: Ibadah Akhlak, Algoritma & Struktur Data, Basis Data, Interaksi Manusia Komputer, Matematika Diskrit, Teori Bahasa Otomata.",
+        "metadata": {
+            "source": "Sebaran Mata Kuliah.pdf",
+            "category": "Kurikulum",
+            "semester": "2",
+            "title": "Matkul Semester 2"
+        }
+    },
+    {
+        "page_content": "Mata Kuliah Semester 3 Informatika: Kemuhammadiyahan, Pemrograman Web, Matematika Rekayasa, Aljabar Linier, Sistem Informasi, Sistem Operasi.",
+        "metadata": {
+            "source": "Sebaran Mata Kuliah.pdf",
+            "category": "Kurikulum",
+            "semester": "3",
+            "title": "Matkul Semester 3"
+        }
+    },
+    {
+        "page_content": "Mata Kuliah Semester 4 Informatika: Sains Islam, Metode Numerik, Statistika, Jaringan Komputer, PBO, Audit Sistem, App Web.",
+        "metadata": {
+            "source": "Sebaran Mata Kuliah.pdf",
+            "category": "Kurikulum",
+            "semester": "4",
+            "title": "Matkul Semester 4"
+        }
+    },
+    {
+        "page_content": "Mata Kuliah Semester 5 Informatika: RPL, Pemodelan Game, Magang Industri, Grafika Komputer, AI, Mobile Programming, Data Mining, Metopen.",
+        "metadata": {
+            "source": "Sebaran Mata Kuliah.pdf",
+            "category": "Kurikulum",
+            "semester": "5",
+            "title": "Matkul Semester 5"
+        }
+    },
+    {
+        "page_content": "Mata Kuliah Semester 6 Informatika: Kewirausahaan, Machine Learning, Optimasi, Citra Digital, KKN, serta Mata Kuliah Pilihan (IoT, Keamanan Sistem, Terdistribusi, Manajemen Proyek).",
+        "metadata": {
+            "source": "Sebaran Mata Kuliah.pdf",
+            "category": "Kurikulum",
+            "semester": "6",
+            "title": "Matkul Semester 6"
+        }
+    },
+    {
+        "page_content": "Mata Kuliah Semester 7 Informatika: Kewarganegaraan, B.Inggris, B.Indonesia, Pancasila, Etika Profesi, serta Mata Kuliah Pilihan (Multimedia, Game Prog, Web Mining, Ethical Hacking).",
+        "metadata": {
+            "source": "Sebaran Mata Kuliah.pdf",
+            "category": "Kurikulum",
+            "semester": "7",
+            "title": "Matkul Semester 7"
+        }
+    },
+    {
+        "page_content": "Mata Kuliah Semester 8 Informatika: Fokus pengerjaan Skripsi (6 SKS).",
+        "metadata": {
+            "source": "Sebaran Mata Kuliah.pdf",
+            "category": "Kurikulum",
+            "semester": "8",
+            "title": "Matkul Semester 8"
+        }
+    },
+    {
+        "page_content": "Program MBKM: Magang Bersertifikat (1-2 Semester). Memberikan pengalaman industri agar siap kerja. Industri mendapatkan talenta, mahasiswa mengaplikasikan ilmu.",
         "metadata": {
             "source": "Program Akademik.pdf",
-            "category": "Program MBKM",
-            "title": "Program MBKM dan Penunjang"
+            "category": "MBKM",
+            "title": "Magang Bersertifikat"
+        }
+    },
+    {
+        "page_content": "Program MBKM: Pertukaran Mahasiswa. Belajar di perguruan tinggi lain selama 1 semester untuk meningkatkan softskills & persatuan. Nilai SKS disetarakan.",
+        "metadata": {
+            "source": "Program Akademik.pdf",
+            "category": "MBKM",
+            "title": "Pertukaran Mahasiswa"
+        }
+    },
+    {
+        "page_content": "Program MBKM: Studi Proyek Independen. Mengembangkan proyek sosial berkelompok untuk memecahkan masalah masyarakat.",
+        "metadata": {
+            "source": "Program Akademik.pdf",
+            "category": "MBKM",
+            "title": "Proyek Independen"
+        }
+    },
+    {
+        "page_content": "Kegiatan Penunjang: Pelatihan & Workshop rutin (Web Dev, Python, Machine Learning) dan Sertifikasi Profesi (LSP) skema 'Junior Network Administrator' berlisensi BNSP.",
+        "metadata": {
+            "source": "Program Akademik.pdf",
+            "category": "Sertifikasi",
+            "title": "Pelatihan dan Sertifikasi"
+        }
+    },
+    {
+        "page_content": "Dokumen Sertifikat Akreditasi Program Studi Informatika UMSIDA. Dokumen ini digunakan sebagai bukti legalitas status akreditasi prodi untuk keperluan melamar kerja atau studi lanjut.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Dokumen Akademik",
+            "title": "Sertifikat Akreditasi",
+            "file_type": "Public Document"
+        }
+    },
+    {
+        "page_content": "Surat Keputusan (SK) Perubahan Nama Program Studi Informatika. Dokumen ini penting untuk validasi ijazah lama atau administrasi yang memerlukan riwayat perubahan nama prodi.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Dokumen Akademik",
+            "title": "SK Perubahan Nama Prodi",
+            "file_type": "SK"
+        }
+    },
+    {
+        "page_content": "Surat Keputusan (SK) Alternatif Pengganti Skripsi. Berisi aturan dan ketentuan mengenai jalur kelulusan non-skripsi bagi mahasiswa Informatika.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Dokumen Akademik",
+            "title": "SK Alternatif Skripsi",
+            "file_type": "SK"
+        }
+    },
+    {
+        "page_content": "Berita Acara Seminar Proposal. Formulir ini wajib dibawa dan diisi saat pelaksanaan Seminar Proposal Skripsi.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Administrasi Skripsi",
+            "title": "Berita Acara Sempro",
+            "file_type": "Form"
+        }
+    },
+    {
+        "page_content": "Berita Acara Ujian Skripsi Informatika. Formulir kelengkapan administrasi untuk pelaksanaan Sidang Skripsi.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Administrasi Skripsi",
+            "title": "Berita Acara Sidang",
+            "file_type": "Form"
+        }
+    },
+    {
+        "page_content": "Form Pendaftaran Ujian Proposal. Formulir yang harus diisi mahasiswa untuk mendaftar Seminar Proposal.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Administrasi Skripsi",
+            "title": "Form Daftar Sempro",
+            "file_type": "Form"
+        }
+    },
+    {
+        "page_content": "Form Pendaftaran Ujian Skripsi dan Alternatif Skripsi. Formulir untuk mendaftar sidang akhir atau jalur alternatif pengganti skripsi.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Administrasi Skripsi",
+            "title": "Form Daftar Sidang",
+            "file_type": "Form"
+        }
+    },
+    {
+        "page_content": "Template Proposal Skripsi Informatika. Dokumen ini berisi format baku, aturan margin, dan struktur penulisan proposal skripsi.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Panduan Skripsi",
+            "title": "Template Proposal",
+            "file_type": "Template"
+        }
+    },
+    {
+        "page_content": "Format Penulisan Proposal PKL 2023. Panduan dan template untuk menyusun proposal Praktik Kerja Lapangan (Magang).",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Panduan PKL",
+            "title": "Format Proposal PKL",
+            "file_type": "Template"
+        }
+    },
+    {
+        "page_content": "Surat Keterangan Lulus Praktikum. Dokumen yang menyatakan mahasiswa telah menyelesaikan seluruh beban praktikum. Syarat untuk mendaftar skripsi/yudisium.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Dokumen Akademik",
+            "title": "Suket Lulus Praktikum",
+            "file_type": "Surat Keterangan"
+        }
+    },
+    {
+        "page_content": "Surat Keterangan Revisi Nilai. Formulir pengajuan perbaikan nilai mata kuliah jika terjadi kesalahan input atau setelah perbaikan.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Administrasi Akademik",
+            "title": "Form Revisi Nilai",
+            "file_type": "Form"
+        }
+    },
+    {
+        "page_content": "Form Surat Permohonan Dispensasi SPP. Digunakan untuk mengajukan keringanan atau penundaan pembayaran SPP.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Keuangan",
+            "title": "Form Dispensasi SPP",
+            "file_type": "Form"
+        }
+    },
+    {
+        "page_content": "Form Persetujuan Dosen Pembimbing Skripsi. Bukti tertulis bahwa dosen pembimbing telah menyetujui proposal atau skripsi mahasiswa.",
+        "metadata": {
+            "source": "https://informatika.umsida.ac.id/dokumen-2/",
+            "category": "Administrasi Skripsi",
+            "title": "Form Acc Dosbing",
+            "file_type": "Form"
         }
     }
 ]

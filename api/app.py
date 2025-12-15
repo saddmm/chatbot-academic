@@ -42,13 +42,13 @@ def initialize_chatbot():
     else:
         retriever = vector_store.as_retriever(
             search_type="similarity", 
-            search_kwargs={"k": 5}
+            search_kwargs={"k": 10}
         )
 
     # 3. Build Graph
     # Memory persistence biasanya ditangani di dalam create_graph menggunakan MemorySaver/Checkpointer
     conn = sqlite3.connect('chat_history.sqlite', check_same_thread=False)
-    memory = SqliteSaver(connection=conn, table_name="chat_history")
+    memory = SqliteSaver(conn)
 
     graph = create_graph(
         llm=llm,
@@ -125,6 +125,50 @@ def chat():
 
     except Exception as e:
         print(f"Error processing chat: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/history", methods=["GET"])
+def get_history():
+    if not app_graph:
+        return jsonify({"error": "Chatbot not initialized properly"}), 500
+
+    thread_id = request.args.get("thread_id")
+    if not thread_id:
+        return jsonify({"error": "Missing thread_id parameter"}), 400
+
+    config = {"configurable": {"thread_id": thread_id}}
+    
+    try:
+        # Ambil state terakhir dari graph untuk thread_id tersebut
+        state_snapshot = app_graph.get_state(config)
+        
+        # Cek apakah ada state/values
+        if not state_snapshot.values:
+             return jsonify({"history": []})
+
+        messages = state_snapshot.values.get("messages", [])
+        
+        # Format pesan agar mudah dibaca frontend
+        formatted_history = []
+        for msg in messages:
+            # Mapping tipe pesan LangChain ke format umum (user/assistant)
+            role = "user"
+            if msg.type == "ai":
+                role = "assistant"
+            elif msg.type == "human":
+                role = "user"
+            else:
+                role = msg.type # Fallback untuk system message dll
+            
+            formatted_history.append({
+                "role": role,
+                "content": msg.content
+            })
+            
+        return jsonify({"history": formatted_history})
+
+    except Exception as e:
+        print(f"Error retrieving history: {e}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
