@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from datetime import datetime
 from flask import Flask, request, jsonify
 from app.graph_builder import create_graph
 from app.llm_config import get_embedding, get_groq_llm
@@ -92,7 +93,7 @@ def chat():
         # Kita perlu mengirimkan 'messages' karena node di graph mengakses state["messages"][-1]
         inputs = {
             "question": user_message,
-            "messages": [HumanMessage(content=user_message)]
+            "messages": [HumanMessage(content=user_message, additional_kwargs={"timestamp": datetime.now().isoformat()})]
         }
         
         # Gunakan .invoke() untuk mendapatkan hasil akhir secara langsung
@@ -101,6 +102,8 @@ def chat():
         
         # Logika Ekstraksi Jawaban (Menangani berbagai kemungkinan output state)
         ai_response = ""
+        timestamp = datetime.now().isoformat()
+        msg_id = None
         
         # Prioritas 1: Jika output ada di key 'generation' (umum untuk RAG graph sederhana)
         if "generation" in result and result["generation"]:
@@ -114,13 +117,21 @@ def chat():
         elif "messages" in result and len(result["messages"]) > 0:
             last_message = result["messages"][-1]
             ai_response = last_message.content
+            msg_id = getattr(last_message, "id", None)
+            if hasattr(last_message, "additional_kwargs"):
+                timestamp = last_message.additional_kwargs.get("timestamp", timestamp)
             
         else:
             ai_response = "Maaf, sistem tidak dapat menghasilkan jawaban (Format output tidak dikenali)."
         
         return jsonify({
             "response": ai_response,
-            "thread_id": thread_id
+            "thread_id": thread_id,
+            "message": {
+                "role": "assistant",
+                "content": ai_response,
+                "timestamp": timestamp
+            }
         })
 
     except Exception as e:
@@ -162,7 +173,8 @@ def get_history():
             
             formatted_history.append({
                 "role": role,
-                "content": msg.content
+                "content": msg.content,
+                "timestamp": msg.additional_kwargs.get("timestamp") if hasattr(msg, "additional_kwargs") else None
             })
             
         return jsonify({"history": formatted_history})

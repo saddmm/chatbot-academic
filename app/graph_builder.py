@@ -6,6 +6,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langgraph.graph import StateGraph, END
 import os
+from datetime import datetime
 
 class GraphState(TypedDict):
     question: str
@@ -87,7 +88,7 @@ def node_answer_rag(state: GraphState, llm, rag_prompt) -> str:
 
     print(f"Generated answer: {answer}")
     
-    return {"messages": [AIMessage(content=answer)]}
+    return {"messages": [AIMessage(content=answer, additional_kwargs={"timestamp": datetime.now().isoformat()})]}
 
 def node_answer_general_chat(state: GraphState, llm, general_chat_prompt) -> str:
     """
@@ -106,7 +107,7 @@ def node_answer_general_chat(state: GraphState, llm, general_chat_prompt) -> str
     
     print(f"Generated general chat response: {response}")
     
-    return {"messages": [AIMessage(content=response)]}
+    return {"messages": [AIMessage(content=response, additional_kwargs={"timestamp": datetime.now().isoformat()})]}
 
 def node_classify_question(state: GraphState, llm, classification_prompt) -> str:
     """
