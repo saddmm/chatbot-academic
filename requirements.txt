@@ -8,3 +8,6 @@ Flask
 langgraph
 langgraph-checkpoint-sqlite
 flask-cors
+ragas
+datasets
+pandas

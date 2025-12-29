@@ -9,7 +9,7 @@ from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.document_transformers import BeautifulSoupTransformer
 
-DEFAULT_CHUNK_SIZE = 1000
+DEFAULT_CHUNK_SIZE = 4000
 DEFAULT_CHUNK_OVERLAP = 200  # UPGRADE: Overlap diperbesar agar konteks terjaga
 
 
