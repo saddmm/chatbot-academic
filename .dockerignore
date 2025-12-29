@@ -1,0 +1,16 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+README.md
+test/
+evaluate_ragas.py
+ragas_evaluation_results.csv
