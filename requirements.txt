@@ -11,3 +11,5 @@ flask-cors
 ragas
 datasets
 pandas
+langchain-chroma
+langchain-groq
