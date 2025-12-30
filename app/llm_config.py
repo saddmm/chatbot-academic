@@ -1,6 +1,7 @@
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
+from langchain_huggingface import HuggingFaceEmbeddings
 import os
 
 load_dotenv()
@@ -26,7 +27,7 @@ def get_groq_llm(model_name: str, temperature: float):
 
 def get_embedding(model_name : str = DEFAULT_EMBEDDING_MODEL_NAME):
     try:
-        embeddings = OllamaEmbeddings(model=model_name)
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         return embeddings
     except Exception as e:
         raise ValueError(f"Failed to initialize embeddings with model {model_name}: {str(e)}") from e

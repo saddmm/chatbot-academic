@@ -7,7 +7,7 @@ from app.llm_config import get_embedding, get_groq_llm
 from app.prompt import CLASSIFICATION_PROMPT_TEMPLATE, CONDENS_QUESTION_PROMPT_TEMPLATE, GENERAL_CHAT_PROMPT_TEMPLATE, RAG_PROMPT_TEMPLATE
 from app.vectorstore import get_or_create_vector_store
 from langchain_core.messages import HumanMessage
-from langchain.globals import set_llm_cache
+from langchain_core.globals import set_llm_cache
 from langchain_community.cache import SQLiteCache
 from langgraph.checkpoint.sqlite import SqliteSaver
 from flask_cors import CORS
@@ -43,7 +43,7 @@ def initialize_chatbot():
     else:
         retriever = vector_store.as_retriever(
             search_type="similarity", 
-            search_kwargs={"k": 10}
+            search_kwargs={"k": 15}
         )
 
     # 3. Build Graph
